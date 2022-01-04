@@ -7,11 +7,10 @@ body,html{
 }
 
 .chat{
-  margin-top: auto;
-  margin-bottom: auto;
+  margin: 10vh 0;
 }
 .card{
-  height: 500px;
+  height: 80vh;
   border-radius: 15px !important;
   background-color: rgba(0,0,0,0.4) !important;
 }
@@ -41,8 +40,8 @@ body,html{
   color:white !important;
 }
 .search:focus{
-     box-shadow:none !important;
-       outline:0px !important;
+  box-shadow:none !important;
+  outline:0px !important;
 }
 .type_msg{
   background-color: rgba(0,0,0,0.3) !important;
