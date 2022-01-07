@@ -1,6 +1,6 @@
 // Layouts
 import ContactsList from './components/layouts/ContactsList';
-import MessageArea from './components/MessageArea';
+import MessageArea from './components/layouts/MessageArea';
 
 // Styles
 import './App.css';

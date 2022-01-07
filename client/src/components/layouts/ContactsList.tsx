@@ -1,18 +1,13 @@
+// Atoms & Molecules
+import InputSearch from "../molecules/InputSearch"
+
+// Component definition
 const ContactsList = () => {
   return (
     <div className="col-md-4 col-xl-3 chat">
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         {/** Search Element */}
-        <div className="card-header">
-          <div className="input-group">
-            <input type="text" placeholder="Search..." name="" className="form-control search" />
-            <div className="input-group-prepend">
-              <span className="input-group-text search_btn">
-                <i className="fas fa-search"></i>
-              </span>
-            </div>
-          </div>
-        </div>
+        <InputSearch />
 
         {/** Contacts List */}
         <div className="card-body contacts_body">
