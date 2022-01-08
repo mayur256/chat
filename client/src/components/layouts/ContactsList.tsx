@@ -1,13 +1,26 @@
+// Top Level Imports
+import { useState } from "react"  
+
 // Atoms & Molecules
 import InputSearch from "../molecules/InputSearch"
 
 // Component definition
 const ContactsList = () => {
+  // State definition
+  const [inputValue, setInputValue] = useState('')
+
+  // JSX
   return (
     <div className="col-md-4 col-xl-3 chat">
       <div className="card mb-sm-3 mb-md-0 contacts_card">
         {/** Search Element */}
-        <InputSearch />
+        <InputSearch
+          value={inputValue}
+          onChange={(e) => {
+            const targetVal = (e.target as HTMLInputElement).value
+            setInputValue(targetVal)
+          }}
+        />
 
         {/** Contacts List */}
         <div className="card-body contacts_body">

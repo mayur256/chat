@@ -7,7 +7,7 @@ interface InputProps {
   name?: string;
   id?: string;
   value?: string;
-  onChange?: (e: React.SyntheticEvent) => void;
+  onChange: (e: React.FormEvent<HTMLInputElement>) => void;
   className?: string;
   placeholder: string;
 }
