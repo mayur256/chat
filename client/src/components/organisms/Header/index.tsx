@@ -7,7 +7,7 @@ import UserInfo from "../../atoms/UserInfo";
 import CallIcons from "../../molecules/CallIcons";
 import Icon from "../../atoms/Icon";
 import Dropdown from "../../molecules/DropDown";
-import DropdownItem from "../../DropdownItem";
+import DropdownItem from "../../atoms/DropdownItem";
 
 // Component definition
 const Header = (): ReactElement => {
