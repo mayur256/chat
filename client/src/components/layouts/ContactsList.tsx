@@ -1,13 +1,57 @@
 // Top Level Imports
-import { useState } from "react"  
+import { useEffect, useState } from "react"  
 
 // Atoms & Molecules
 import InputSearch from "../molecules/InputSearch"
+import ContactThread from "../molecules/ContactThread"
+import ContactThreads from "../organisms/ContactThreads"
+
+// An Array of contact thread objects
+type ContactThreadType = {
+  id: number,
+  name: string,
+  avatarSrc: string,
+  online: boolean,
+  isSelected: boolean
+}
+
+const contactThreads: Array<ContactThreadType> = [
+  {
+    id: 1,
+    name: 'Mayur',
+    avatarSrc: 'https://yt3.ggpht.com/yti/APfAmoGRnfYXWAS9tYgU7u0un-rDKE4WAXW4pHWefyJfSA=s88-c-k-c0x00ffffff-no-rj-mo',
+    online: true,
+    isSelected: true
+  },
+  {
+    id: 2,
+    name: 'Gitanjali',
+    avatarSrc: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
+    online: false,
+    isSelected: false
+  }
+]
 
 // Component definition
 const ContactsList = () => {
   // State definition
   const [inputValue, setInputValue] = useState('')
+  const [contacts, setContacts] = useState([] as ContactThreadType[])
+  
+  // initialize contacts state in useEffect
+  useEffect((): void => {
+    setContacts(contactThreads)
+  },[])
+
+  // toggle selected contact thread
+  const setThisSelected = (id: number): void => {
+    const filteredContacts = contactThreads.map(contact => {
+      if (contact.id === id) return { ...contact, isSelected: true }
+      else return {...contact, isSelected: false}
+    })
+
+    setContacts(filteredContacts)
+  }
 
   // JSX
   return (
@@ -23,38 +67,27 @@ const ContactsList = () => {
         />
 
         {/** Contacts List */}
-        <div className="card-body contacts_body">
-          <ul className="contacts">
-            {/** Contact */}
-            <li className="active">
-              <div className="d-flex bd-highlight">
-                {/** Contact Avatar */}
-                <div className="img_cont">
-                  <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" className="rounded-circle user_img" alt="random" />
-                  <span className="online_icon"></span>
-                </div>
-                {/** User Name and Status */}
-                <div className="user_info">
-                  <span>Khalid</span>
-                  <p>Kalid is online</p>
-                </div>
-              </div>
-            </li>
-            <li>
-              <div className="d-flex bd-highlight">
-                <div className="img_cont">
-                  <img src="https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg" className="rounded-circle user_img" alt="random" />
-                  <span className="online_icon offline"></span>
-                </div>
-                <div className="user_info">
-                  <span>Taherah Big</span>
-                  <p>Taherah left 7 mins ago</p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      <div className="card-footer"></div>
+        <ContactThreads>
+          
+          {/** Contacts */}
+          {
+            contacts.map(contact => {
+              return (
+                <ContactThread
+                  key={contact.id}
+                  name={contact.name}
+                  online={contact.online}
+                  avatarSrc={contact.avatarSrc}
+                  isSelected={contact.isSelected}
+                  onClicked={() => setThisSelected(contact.id)}
+                />
+              )    
+            })
+          }
+
+        </ContactThreads>
+
+        <div className="card-footer"></div>
       </div>
     </div>
   )
