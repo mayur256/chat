@@ -1,33 +1,16 @@
-const MessageArea = () => {
+// Top level imports
+import { ReactElement } from "react"
+
+// Atoms & Molecules
+import Header from "../organisms/Header"
+
+// Component definition
+const MessageArea = (): ReactElement => {
   return (
     <div className="col-md-8 col-xl-6 chat">
       <div className="card">
         {/** Message Header */}
-        <div className="card-header msg_head">
-          <div className="d-flex bd-highlight">
-            <div className="img_cont">
-              <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" className="rounded-circle user_img" alt="random" />
-              <span className="online_icon"></span>
-            </div>
-            <div className="user_info">
-              <span>Chat with Khalid</span>
-              <p>1767 Messages</p>
-            </div>
-            <div className="video_cam">
-              <span><i className="fas fa-video"></i></span>
-              <span><i className="fas fa-phone"></i></span>
-            </div>
-          </div>
-          <span id="action_menu_btn"><i className="fas fa-ellipsis-v"></i></span>
-          <div className="action_menu">
-            <ul>
-              <li><i className="fas fa-user-circle"></i> View profile</li>
-              <li><i className="fas fa-users"></i> Add to close friends</li>
-              <li><i className="fas fa-plus"></i> Add to group</li>
-              <li><i className="fas fa-ban"></i> Block</li>
-            </ul>
-          </div>
-        </div>
+        <Header/>
 
         {/** Message Body */}
         <div className="card-body msg_card_body">
@@ -55,11 +38,15 @@ const MessageArea = () => {
         <div className="card-footer">
           <div className="input-group">
             <div className="input-group-append">
-              <span className="input-group-text attach_btn"><i className="fas fa-paperclip"></i></span>
+              <span className="input-group-text attach_btn">
+                <i className="fas fa-paperclip"></i>
+              </span>
             </div>
             <textarea name="" className="form-control type_msg" placeholder="Type your message..."></textarea>
             <div className="input-group-append">
-              <span className="input-group-text send_btn"><i className="fas fa-location-arrow"></i></span>
+              <span className="input-group-text send_btn">
+                <i className="fas fa-location-arrow"></i>
+              </span>
             </div>
           </div>
         </div>
