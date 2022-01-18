@@ -224,3 +224,8 @@ body,html{
 .cursor-pointer {
   cursor: pointer;
 }
+
+.login-form {
+  height: 50vh;
+  margin: 25vh 0 0 0;
+}
