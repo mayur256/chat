@@ -36,6 +36,8 @@ const AppRouter = (): ReactElement => {
 
   // useEffect
   useEffect((): void => {
+    // check if user is logged in and  if user is not logged in 
+    // redirect user to login page
     if (!isLoggedIn()) {
       navigate('/login');
     }
@@ -50,10 +52,6 @@ const AppRouter = (): ReactElement => {
     } />
   ));
 
-  // check if user is logged in and  if user is not logged in 
-  // redirect user to login page
-  
-
   return (
     <Routes>
       {routeElements}
@@ -61,4 +59,4 @@ const AppRouter = (): ReactElement => {
   );
 };
 
-export default AppRouter
+export default AppRouter;
