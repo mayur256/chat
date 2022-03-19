@@ -1,13 +1,8 @@
-// Layouts
-import Login from './components/layouts/Login';
-import Home from './components/layouts/Home';
+// Root Router 
+import { HashRouter as Router } from "react-router-dom";
 
-// React-router library
-import {
-	HashRouter as Router,
-	Routes,
-	Route
-} from "react-router-dom"
+// Router Component
+import AppRouter from './router/AppRouter';
 
 // Styles
 import './App.css';
@@ -18,10 +13,7 @@ function App() {
 			<div className="container-fluid h-100">
 				<div className="row justify-content-center">
 					<Router>
-						<Routes>
-							<Route path="/" element={<Home />} />
-							<Route path="login" element={<Login />} />
-						</Routes>
+						<AppRouter />
 					</Router>
 				</div>
 			</div>

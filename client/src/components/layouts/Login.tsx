@@ -1,15 +1,24 @@
 // Top Level imports
 import React, { useState } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 // Atoms / Molecules components
 import Input from "../atoms/Input";
 
+// Utilities
+import { login } from "../../utilities/Common";
+
+// Component Definition
 const Login = () => {
   // state definition
   const [formValues, setFormValues] = useState({
     email: '',
     password: ''
   });
+
+  // hooks
+  const navigate = useNavigate();
 
   // Change event handler for form elements
   const onFormValueChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -24,7 +33,9 @@ const Login = () => {
   // form submit event handler
   const submitHandler = (e: React.FormEvent): void => {
     e.preventDefault();
-    console.log({...formValues})
+    const { email } = formValues;
+    login(email);
+    navigate('/', { replace: true });
   }
 
   return (
