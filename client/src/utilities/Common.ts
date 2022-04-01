@@ -20,10 +20,18 @@ export const isLoggedIn = (): boolean => {
  * @returns void
  * @description logs in the user with given email address
  */
-export const login = (email: string): void => {
-  let user = JSON.parse(window.localStorage.getItem('user') as any);
-  if (!user) {
-    user = {email}
-  }
-  window.localStorage.setItem('user', JSON.stringify(user));
+export const login = (email: string): Promise<void> => {
+  return new Promise((resolve): void => {
+    let user = JSON.parse(window.localStorage.getItem('user') as string)
+    if (!user) {
+      user = {
+        email
+      };
+    } else {
+      user.email = email;
+    }
+
+    window.localStorage.setItem('user', JSON.stringify(user))
+    resolve()
+  })
 }

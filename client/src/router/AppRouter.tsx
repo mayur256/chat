@@ -1,19 +1,19 @@
 // Top level imports
-import React, { ReactElement, Suspense, useEffect } from "react";
+import React, { ReactElement, Suspense, ComponentType } from "react";
 
 // React-router library
 import {
   Routes,
   Route,
-  useNavigate,
+  Navigate,
 } from "react-router-dom"
 
 // Utilities
 import { isLoggedIn } from "../utilities/Common";
 
 // Layouts
-const Login = React.lazy((): any => import('../components/layouts/Login'));
-const Home = React.lazy((): any => import('../components/layouts/Home'));
+const Login = React.lazy((): Promise<{ default: ComponentType }> => import('../components/layouts/Login'));
+const Home = React.lazy((): Promise<{ default: ComponentType }> => import('../components/layouts/Home'));
 
 // Routes definition
 const routes = [
@@ -21,6 +21,9 @@ const routes = [
     name: 'home',
     path: '/',
     component: <Home />,
+    meta: {
+      requiresAuth: true
+    }
   },
   {
     name: 'login',
@@ -31,30 +34,27 @@ const routes = [
 
 // Component Definition
 const AppRouter = (): ReactElement => {
-  // hooks
-  const navigate = useNavigate();
-
-  // useEffect
-  useEffect((): void => {
-    // check if user is logged in and  if user is not logged in 
-    // redirect user to login page
-    if (!isLoggedIn()) {
-      navigate('/login');
-    }
-  }, [navigate]);
-
   // generate routes
-  const routeElements = routes.map(({ name, path, component }): any => (
-    <Route key={name} path={path} element={
-      <Suspense fallback={<div>Loading...</div>}>
-        {component}
-      </Suspense>
-    } />
+  const routeElements = routes.map(({ name, path, component, meta }): any => (
+    <Route
+      key={name}
+      path={path}
+      element={
+        meta?.requiresAuth && !isLoggedIn() ? (
+          <Navigate to="/login" replace />
+        ) : (
+          <Suspense fallback={<div>Loading...</div >}>
+            {component}
+          </Suspense >
+        )
+      }
+    />
   ));
 
   return (
     <Routes>
       {routeElements}
+      <Route path="*" element={<div>404 Not Found</div>} />
     </Routes>
   );
 };

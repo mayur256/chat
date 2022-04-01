@@ -1,5 +1,5 @@
 // Top Level imports
-import React, { useState } from "react";
+import React, { useState, ReactElement } from "react";
 
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,7 @@ import Input from "../atoms/Input";
 import { login } from "../../utilities/Common";
 
 // Component Definition
-const Login = () => {
+const Login = (): ReactElement => {
   // state definition
   const [formValues, setFormValues] = useState({
     email: '',
@@ -31,11 +31,13 @@ const Login = () => {
   }
 
   // form submit event handler
-  const submitHandler = (e: React.FormEvent): void => {
+  const submitHandler = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     const { email } = formValues;
-    login(email);
-    navigate('/', { replace: true });
+    await login(email);
+    setTimeout((): void => { 
+      navigate('/', { replace: true });
+    }, 1000);
   }
 
   return (
