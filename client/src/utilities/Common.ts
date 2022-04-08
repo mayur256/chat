@@ -1,0 +1,37 @@
+/**
+ * common utility functions that will be shared by the application
+ */
+
+/**
+ * @params <void>
+ * @returns boolean
+ * @description this function checks whether user is logged in or not
+ */
+export const isLoggedIn = (): boolean => {
+  const user = JSON.parse(window.localStorage.getItem('user') as any);
+  if (user?.email) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * @params <string>
+ * @returns void
+ * @description logs in the user with given email address
+ */
+export const login = (email: string): Promise<void> => {
+  return new Promise((resolve): void => {
+    let user = JSON.parse(window.localStorage.getItem('user') as string)
+    if (!user) {
+      user = {
+        email
+      };
+    } else {
+      user.email = email;
+    }
+
+    window.localStorage.setItem('user', JSON.stringify(user))
+    resolve()
+  })
+}
