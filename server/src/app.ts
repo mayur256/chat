@@ -1,10 +1,10 @@
 // import initialized express instance
-import expressInstance from "./expressInstance";
+import serverInstance from "./server";
 
 // Ports
 const PORT = process.env.PORT || 4000;
 
 // listen to server on port
-expressInstance.listen(PORT, (): void => {
+serverInstance.listen(PORT, (): void => {
   console.log(`Server listening on port ${PORT}`);
 });
