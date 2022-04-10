@@ -1,4 +1,3 @@
-import { Socket } from 'dgram';
 import express, { Application } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -19,10 +18,15 @@ interface InterServerEvents {
   ping: () => void;
 }
 
-interface SocketData {
+interface Message {
+  type: string;
+  payload: string;
+  timestamp: string;
+}
+/*interface SocketData {
   name: string;
   age: number;
-}
+}*/
 
 class App {
   private express: Application;
@@ -48,22 +52,34 @@ class App {
 
   // create socket server on top of http server
   createSocketServer() {
-    this.ioSocket = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(this.httpServer, {
+    this.ioSocket = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents>(this.httpServer, {
       cors: {
         origin: '*',
       },
     });
   }
 
-  captureSocketConnectionEvent() {
+  captureSocketConnectionEvent = () => {
     // fired when a new connection is established
-    this.ioSocket.on('connection', (socket: any) => {
-      console.log(socket.data);
-      socket.on('hello', (payload: any) => {
-        // client to server event
-        console.log("hello event", payload);
-      })
-    })
+    this.ioSocket.on('connection', (clientSocket: any) => {
+      // sign in event from client
+      clientSocket.on('signIn', () => {
+        // at this point client is signed in
+        // handle events or messages specific to a client
+        this.handleClientEvents(clientSocket);
+      });
+
+      // fired when socket is disconnected
+      clientSocket.on('disconnect', () => console.log('Client disconnected!'));
+    });   
+  }
+
+  handleClientEvents = (clientSocket: any) => {
+    clientSocket.on('message', this.handleClientMessage);
+  }
+
+  handleClientMessage = (message: Message) => {
+    console.log(message);
   }
 
   enableCors() {

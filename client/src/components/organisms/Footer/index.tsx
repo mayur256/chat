@@ -2,25 +2,14 @@
 import { ReactElement } from "react";
 import Icon from "../../atoms/Icon";
 import TextArea from "../../atoms/TextArea";
-// Socket IO reference
-import { io, Socket } from "socket.io-client";
 
-// Types definitions for socket.io
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
-
-interface ClientToServerEvents {
-  hello: () => void;
-}
-
-// Connecing with socket server
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("http://localhost:4000");
+// props type definitions
+interface IProps {
+  sendMessage: (message: string) => void;
+};
 
 // Component definition
-const Footer = (): ReactElement => {
+const Footer = ({ sendMessage }: IProps): ReactElement => {
   // send button clicked event handler
   const sendMsgClicked = (): void => {
     const form: HTMLFormElement = document.querySelector('#msg-send-form') as HTMLFormElement;
@@ -28,11 +17,6 @@ const Footer = (): ReactElement => {
     const msgVal = message.value.trim();
     if (!msgVal) return;
     sendMessage(msgVal);
-  }
-
-  // formsubmit event handler
-  const sendMessage = (msg: string): void => {
-    socket.emit('hello');
   }
   
   // JSX code

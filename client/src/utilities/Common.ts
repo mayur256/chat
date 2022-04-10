@@ -35,3 +35,12 @@ export const login = (email: string): Promise<void> => {
     resolve()
   })
 }
+
+/**
+ * @params <void>
+ * @returns <void>
+ * @description logs out an user by remove credentials from local storage
+ */
+export const logout = (): void => {
+  window.localStorage.removeItem('user');
+}
