@@ -4,19 +4,24 @@ import { ReactElement } from "react";
 import MsgPayload from "../../atoms/MsgPayload"
 import MessageTime from "../../atoms/MessageTime";
 
+// types
+import { MessageType } from '../../types';
+
 // type definition for props
 interface IProps {
-  send? : boolean;
+  send?: boolean;
+  message: MessageType;
 }
 
 // Component definition
 const MessageContainer = ({
-  send = false
+  send = false,
+  message,
 }: IProps): ReactElement => {
   return (
-    <div className={`msg_cotainer${send ? '_send' : ''}`}>
-      <MsgPayload />
-      <MessageTime/>
+    <div className={`msg_cotainer${send ? '_send' : ''} text-center`}>
+      <MsgPayload payload={ message.payload} />
+      <MessageTime time={message.timestamp} />
     </div>
   )
 }

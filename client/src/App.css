@@ -147,7 +147,9 @@ body,html{
 .msg_cotainer{
   margin-top: auto;
   margin-bottom: auto;
+  min-width: 50px;
   margin-left: 10px;
+  margin-right: 10px;
   border-radius: 25px;
   background-color: #82ccdd;
   padding: 10px;

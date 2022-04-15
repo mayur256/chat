@@ -10,6 +10,8 @@ import MessageArea from "./MessageArea";
 import LogoutBtn from "../molecules/LogoutBtn";
 import NavHeader from "../organisms/NavHeader";
 
+// types
+import { MessageType } from '../types';
 // utilities
 import { logout } from "../../utilities/Common";
 
@@ -23,21 +25,30 @@ interface ServerToClientEvents {
   withAck: (d: string, callback: (e: number) => void) => void;
 }
 
-interface Message {
-  type: string;
-  payload: string;
-  timestamp: string;
-}
-
 interface ClientToServerEvents {
   signIn: () => void;
-  message: (message: Message) => void;
+  message: (message: MessageType) => void;
 }
+
+// message list
+const mockMessages: MessageType[] = [
+  {
+    payload: 'Hey Bro! How are you?',
+    timestamp: new Date().getTime(),
+    send: true,
+  },
+  {
+    payload: 'Hey Bro! How are you?',
+    timestamp: new Date().getTime(),
+  },
+];
 
 // Component definition
 const Home = (): ReactElement => {
   // state definitions
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
+  const [messages, setMessages] = useState <MessageType[]>(mockMessages);
+
   // hooks
   const navigate = useNavigate();
 
@@ -54,7 +65,7 @@ const Home = (): ReactElement => {
     setSocket(socketInstance);
     
     notifyServerOfSignIn(socketInstance);
-  }, [])
+  }, []);
 
   // user logout event handler
   const logoutUser = (): void => {
@@ -65,13 +76,15 @@ const Home = (): ReactElement => {
 
   // send user message to server
   const sendMessage = (msgTxt: string): void => {
-    const message: Message = {
+    const message: MessageType = {
       type: 'text',
       payload: msgTxt,
-      timestamp: `${new Date().getTime()}`
+      timestamp: new Date().getTime(),
+      send: true
     };
 
     socket?.emit('message', message);
+    setMessages(prevMessages => ([...prevMessages, message]));
   }
 
   // JSX Code
@@ -84,7 +97,7 @@ const Home = (): ReactElement => {
       <ContactsList />
 
       {/** Chat Message Area */}
-      <MessageArea sendMessage={sendMessage} />
+      <MessageArea sendMessage={sendMessage} messages={messages} />
     </>
   )
   

@@ -1,8 +1,13 @@
 import { ReactElement } from "react";
 
-const Message = (): ReactElement => {
+// props type definition
+interface IProps {
+  payload: string;
+}
+// component definition
+const Message = ({payload}: IProps): ReactElement => {
   return (
-    <span className="message">Hi, how are you samim?</span>
+    <span className="message">{ payload }</span>
   )
 }
 

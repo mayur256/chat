@@ -11,8 +11,16 @@ const MessageContainer = ({
   send = false
 }: CProps): ReactElement => {
   return (
-    <div className={`d-flex justify-content-${send ? 'end' : 'start'} mb-4`}>
-      {children}
+    <div className={`d-block mb-4 clearfix`}>
+      <div
+        className={`d-flex ${send ? 'flex-row-reverse align-items-end' : ''}`}
+        style={{ 
+          maxWidth: '80%',
+          float: send ? 'right' : 'none',
+         }}
+      >
+        {children}
+      </div>
     </div>
   )
 }

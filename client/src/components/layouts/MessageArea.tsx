@@ -6,13 +6,20 @@ import Header from "../organisms/Header"
 import Body from "../organisms/Body"
 import Footer from "../organisms/Footer"
 
+// types
+import { MessageType } from '../types';
+
 // props type definitions
 interface IProps {
+  messages: MessageType[];
   sendMessage: (message: string) => void;
 };
 
 // Component definition
-const MessageArea = ({ sendMessage }: IProps): ReactElement => {
+const MessageArea = ({
+  sendMessage,
+  messages,
+}: IProps): ReactElement => {
   return (
     <div className="col-md-8 col-xl-6 chat">
       <div className="card">
@@ -21,7 +28,7 @@ const MessageArea = ({ sendMessage }: IProps): ReactElement => {
         <Header/>
 
         {/** Message Body */}
-        <Body/>
+        <Body messages={messages}/>
 
         {/** Message Footer */}
         <Footer sendMessage={sendMessage}/>
