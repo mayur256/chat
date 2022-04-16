@@ -2,18 +2,18 @@
 import { ReactElement, useEffect, useState } from "react";
 
 // React-Router
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 // atoms / molecules components
 import ContactsList from "./ContactsList";
 import MessageArea from "./MessageArea";
-import LogoutBtn from "../molecules/LogoutBtn";
-import NavHeader from "../organisms/NavHeader";
+/*import LogoutBtn from "../molecules/LogoutBtn";
+import NavHeader from "../organisms/NavHeader";*/
 
 // types
 import { MessageType } from '../types';
 // utilities
-import { logout } from "../../utilities/Common";
+// import { logout } from "../../utilities/Common";
 
 // Socket IO reference
 import { io, Socket } from "socket.io-client";
@@ -50,7 +50,7 @@ const Home = (): ReactElement => {
   const [messages, setMessages] = useState <MessageType[]>(mockMessages);
 
   // hooks
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // check if socket is connected
   // send signIn event to server
@@ -68,11 +68,11 @@ const Home = (): ReactElement => {
   }, []);
 
   // user logout event handler
-  const logoutUser = (): void => {
+  /*const logoutUser = (): void => {
     logout();
     socket?.disconnect();
     navigate('/login');
-  }
+  }*/
 
   // send user message to server
   const sendMessage = (msgTxt: string): void => {
@@ -90,9 +90,9 @@ const Home = (): ReactElement => {
   // JSX Code
   return (
     <>
-      <NavHeader>
+      {/* <NavHeader>
         <LogoutBtn onClicked={logoutUser} />
-      </NavHeader>
+      </NavHeader> */}
       {/** Contacts List */}
       <ContactsList />
 

@@ -144,7 +144,7 @@ body,html{
   cursor: pointer;
   margin-right: 20px;
 }
-.msg_cotainer{
+.msg_container{
   margin-top: auto;
   margin-bottom: auto;
   min-width: 50px;
@@ -155,7 +155,7 @@ body,html{
   padding: 10px;
   position: relative;
 }
-.msg_cotainer_send{
+.msg_container_send{
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 10px;

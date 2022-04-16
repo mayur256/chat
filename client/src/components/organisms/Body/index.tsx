@@ -25,7 +25,7 @@ const Body = ({messages}: IProps): ReactElement => {
             inMsg
           />
 
-          <Message message={message} />
+          <Message message={message} send={message.send} />
         </MessageContainer>  
       ))}
     </div>

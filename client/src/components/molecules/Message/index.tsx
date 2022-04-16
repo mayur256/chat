@@ -19,7 +19,7 @@ const MessageContainer = ({
   message,
 }: IProps): ReactElement => {
   return (
-    <div className={`msg_cotainer${send ? '_send' : ''} text-center`}>
+    <div className={`msg_container${send ?  '_send' : ''} text-center`}>
       <MsgPayload payload={ message.payload} />
       <MessageTime time={message.timestamp} />
     </div>

@@ -2,7 +2,7 @@
 import serverInstance from "./server";
 
 // Ports
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 
 // listen to server on port
 serverInstance.listen(PORT, (): void => {
