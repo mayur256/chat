@@ -1,57 +1,26 @@
 // Top Level Imports
-import { useEffect, useState } from "react"  
+import { useState } from "react"  
 
 // Atoms & Molecules
 import InputSearch from "../molecules/InputSearch"
 import ContactThread from "../molecules/ContactThread"
 import ContactThreads from "../organisms/ContactThreads"
 
-// An Array of contact thread objects
-type ContactThreadType = {
-  id: number,
-  name: string,
-  avatarSrc: string,
-  online: boolean,
-  isSelected: boolean
+// type definitions
+import { ContactThreadType } from "../types"
+
+// props type definition
+interface IProps {
+  contacts: ContactThreadType[];
+  contactSelected: (contactId: string)=> void
 }
-
-const contactThreads: Array<ContactThreadType> = [
-  {
-    id: 1,
-    name: 'Mayur',
-    avatarSrc: 'https://yt3.ggpht.com/yti/APfAmoGRnfYXWAS9tYgU7u0un-rDKE4WAXW4pHWefyJfSA=s88-c-k-c0x00ffffff-no-rj-mo',
-    online: true,
-    isSelected: true
-  },
-  {
-    id: 2,
-    name: 'Gitanjali',
-    avatarSrc: 'https://2.bp.blogspot.com/-8ytYF7cfPkQ/WkPe1-rtrcI/AAAAAAAAGqU/FGfTDVgkcIwmOTtjLka51vineFBExJuSACLcBGAs/s320/31.jpg',
-    online: false,
-    isSelected: false
-  }
-]
-
 // Component definition
-const ContactsList = () => {
+const ContactsList = ({
+  contacts,
+  contactSelected
+}: IProps) => {
   // State definition
-  const [inputValue, setInputValue] = useState('')
-  const [contacts, setContacts] = useState([] as ContactThreadType[])
-  
-  // initialize contacts state in useEffect
-  useEffect((): void => {
-    setContacts(contactThreads)
-  },[])
-
-  // toggle selected contact thread
-  const setThisSelected = (id: number): void => {
-    const filteredContacts = contactThreads.map(contact => {
-      if (contact.id === id) return { ...contact, isSelected: true }
-      else return {...contact, isSelected: false}
-    })
-
-    setContacts(filteredContacts)
-  }
+  const [inputValue, setInputValue] = useState('');
 
   // JSX
   return (
@@ -61,8 +30,8 @@ const ContactsList = () => {
         <InputSearch
           value={inputValue}
           onChange={(e) => {
-            const targetVal = (e.target as HTMLInputElement).value
-            setInputValue(targetVal)
+            const targetVal = (e.target as HTMLInputElement).value;
+            setInputValue(targetVal);
           }}
         />
 
@@ -71,7 +40,7 @@ const ContactsList = () => {
           
           {/** Contacts */}
           {
-            contacts.map(contact => {
+            contacts.map((contact: ContactThreadType) => {
               return (
                 <ContactThread
                   key={contact.id}
@@ -79,7 +48,7 @@ const ContactsList = () => {
                   online={contact.online}
                   avatarSrc={contact.avatarSrc}
                   isSelected={contact.isSelected}
-                  onClicked={() => setThisSelected(contact.id)}
+                  onClicked={() => contactSelected(contact.id)}
                 />
               )    
             })
@@ -93,4 +62,4 @@ const ContactsList = () => {
   )
 }
 
-export default ContactsList
+export default ContactsList;

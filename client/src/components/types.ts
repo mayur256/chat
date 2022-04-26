@@ -5,3 +5,11 @@ export interface MessageType {
     type?: string;
     send?: boolean;
 }
+
+export interface ContactThreadType {
+    id: string;
+    name: string;
+    avatarSrc: string;
+    online: boolean;
+    isSelected: boolean;
+}

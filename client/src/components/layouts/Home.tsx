@@ -1,22 +1,19 @@
 // top level imports
 import { ReactElement, useEffect, useState } from "react";
 
-// React-Router
-// import { useNavigate } from "react-router-dom";
+// Socket IO reference
+import { io, Socket } from "socket.io-client";
 
 // atoms / molecules components
 import ContactsList from "./ContactsList";
 import MessageArea from "./MessageArea";
-/*import LogoutBtn from "../molecules/LogoutBtn";
-import NavHeader from "../organisms/NavHeader";*/
 
 // types
-import { MessageType } from '../types';
-// utilities
-// import { logout } from "../../utilities/Common";
+import { ContactThreadType, MessageType } from '../types';
 
-// Socket IO reference
-import { io, Socket } from "socket.io-client";
+// Utilities
+import { delay } from "../../utilities/Common";
+import { mockedContactThread } from "../../utilities/mocks";
 
 // Types definitions for socket.io
 interface ServerToClientEvents {
@@ -47,7 +44,9 @@ const mockMessages: MessageType[] = [
 const Home = (): ReactElement => {
   // state definitions
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
-  const [messages, setMessages] = useState <MessageType[]>(mockMessages);
+  const [messages, setMessages] = useState<MessageType[]>(mockMessages);
+  const [contacts, setContacts] = useState<ContactThreadType[]>([]);
+  const [selectedContact, setSelectedContact] = useState<ContactThreadType>(mockedContactThread[0]); 
 
   // hooks
   // const navigate = useNavigate();
@@ -63,9 +62,16 @@ const Home = (): ReactElement => {
     // establish connection with server
     const socketInstance: Socket = io("http://localhost:4000");
     setSocket(socketInstance);
-    
+    fetchUsers();
     notifyServerOfSignIn(socketInstance);
   }, []);
+
+  // invoke API to fetch users
+  const fetchUsers = async(): Promise<void> => {
+    // mimick API call
+    //await delay(2000);
+    setContacts(mockedContactThread);
+  }
 
   // user logout event handler
   /*const logoutUser = (): void => {
@@ -87,17 +93,43 @@ const Home = (): ReactElement => {
     setMessages(prevMessages => ([...prevMessages, message]));
   }
 
+  // contact selected
+  const onContactSelected = (contactId: string): void => {
+    const transformedContacts: ContactThreadType[] = contacts.map((contact: ContactThreadType): ContactThreadType => { 
+      if (contactId === contact.id) {
+        return {
+          ...contact,
+          isSelected: true,
+        }
+      }
+
+      return {
+        ...contact,
+        isSelected: false
+      }
+    });
+
+    setContacts(transformedContacts);
+
+    // find and set selected contact
+    const contact = transformedContacts.find(({ id }): boolean => contactId === id);
+    if (contact) setSelectedContact(contact);
+  }
+
   // JSX Code
   return (
     <>
-      {/* <NavHeader>
-        <LogoutBtn onClicked={logoutUser} />
-      </NavHeader> */}
-      {/** Contacts List */}
-      <ContactsList />
+      <ContactsList
+        contacts={contacts}
+        contactSelected={onContactSelected}
+      />
 
       {/** Chat Message Area */}
-      <MessageArea sendMessage={sendMessage} messages={messages} />
+      <MessageArea
+        selectedContact={selectedContact}
+        sendMessage={sendMessage}
+        messages={messages}
+      />
     </>
   )
   

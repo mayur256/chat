@@ -7,16 +7,18 @@ import Body from "../organisms/Body"
 import Footer from "../organisms/Footer"
 
 // types
-import { MessageType } from '../types';
+import { MessageType, ContactThreadType } from '../types';
 
 // props type definitions
 interface IProps {
+  selectedContact: ContactThreadType;
   messages: MessageType[];
   sendMessage: (message: string) => void;
 };
 
 // Component definition
 const MessageArea = ({
+  selectedContact,
   sendMessage,
   messages,
 }: IProps): ReactElement => {
@@ -25,7 +27,9 @@ const MessageArea = ({
       <div className="card">
         
         {/** Message Header */}
-        <Header/>
+        <Header
+          selectedContact={selectedContact}
+        />
 
         {/** Message Body */}
         <Body messages={messages}/>

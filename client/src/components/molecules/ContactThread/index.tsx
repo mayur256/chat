@@ -10,7 +10,7 @@ interface Props {
   name: string;
   avatarSrc: string;
   isSelected: boolean;
-  onClicked: () => void
+  onClicked?: () => void
   online?: boolean;
 }
 

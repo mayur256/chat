@@ -44,3 +44,14 @@ export const login = (email: string): Promise<void> => {
 export const logout = (): void => {
   window.localStorage.removeItem('user');
 }
+
+/**
+ * @params <number>
+ * @returns <void>
+ * @description delays the execution for specified number of milliseconds
+ */
+export const delay = (ms: number): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
