@@ -231,3 +231,12 @@ body,html{
   height: 50vh;
   margin: 25vh 0 0 0;
 }
+
+.checkbox-lg{
+  height: 1.3rem;
+  width: 1.3rem;
+}
+
+.text-dodgerblue{
+  color: dodgerblue;
+}
