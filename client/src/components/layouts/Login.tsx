@@ -85,8 +85,8 @@ const Login = (): ReactElement => {
       </Button>
 
       <div className="mt-4 mb-4 text-dark text-center">
-        <p>Not a member ? &nbsp;
-          <Link to="/register">Register</Link></p>
+        <h5>Not a member ? &nbsp;
+          <Link to="/register">Register</Link></h5>
       </div>
     </form>
   )
