@@ -1,8 +1,8 @@
 // Top level imports
-import React from "react";
+import React, { ComponentPropsWithoutRef } from "react";
 
 /** Prop type definitons */
-interface InputProps {
+interface InputProps extends ComponentPropsWithoutRef<"input"> {
   type: string;
   name: string;
   id: string;
