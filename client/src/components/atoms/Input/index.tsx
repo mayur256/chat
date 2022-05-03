@@ -3,12 +3,12 @@ import React from "react";
 
 /** Prop type definitons */
 interface InputProps {
-  type?: string;
-  name?: string;
-  id?: string;
-  value?: string;
+  type: string;
+  name: string;
+  id: string;
+  value: string;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
-  className?: string;
+  className: string;
   placeholder: string;
 }
 
@@ -21,7 +21,7 @@ const Input = ({
   onChange,
   placeholder =  '',
   className = ''
-}: InputProps) => {
+}: Partial<InputProps>) => {
 
   // JSX Code
   return (

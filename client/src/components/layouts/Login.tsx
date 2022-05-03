@@ -1,13 +1,17 @@
 // Top Level imports
 import React, { useState, ReactElement } from "react";
 
-// import { useNavigate } from "react-router-dom";
+// react - router
+import { Link } from "react-router-dom";
 
 // Atoms / Molecules components
 import Input from "../atoms/Input";
+import Button from "../atoms/Button";
 
 // Utilities
 import { login } from "../../utilities/Common";
+import FormControl from "../molecules/FormControl";
+import Checkbox from "../molecules/Checkbox";
 
 // Component Definition
 const Login = (): ReactElement => {
@@ -39,49 +43,52 @@ const Login = (): ReactElement => {
   }
 
   return (
-    <>
-      <form className="login-form" onSubmit={submitHandler}>
-        <legend className="mb-3">Welcome</legend>
-        <div className="mb-4">
-          <label htmlFor="email" className="form-label">
-            Email or Username<span className="text-danger">*</span>
-          </label>
+    <form className="login-form text-dodgerblue" onSubmit={submitHandler}>
+      <h3 className="mb-4 text-center font-weight-bold">Welcome</h3>
+      <legend className="mb-3 text-body">Please sign in to continue</legend>
 
-          <Input
-            id="email"
-            type="email"
-            name="email"
-            value={formValues.email}
-            placeholder="Your email or username"
-            className="form-control"
-            onChange={onFormValueChange}
-          />
-        </div>
+      {/** Username / Email */}
+      <FormControl className="form-floating mb-4">
+        <Input
+          id="email"
+          type="email"
+          name="email"
+          value={formValues.email}
+          placeholder="Your email or username"
+          className="form-control form-control-lg"
+          onChange={onFormValueChange}
+        />
+      </FormControl>
 
-        <div className="mb-4">
-          <label htmlFor="password" className="form-label">
-            Password<span className="text-danger">*</span>
-          </label>
+      {/** Password field */}
+      <FormControl className="form-floating mb-4">
+        <Input
+          id="password"
+          type="password"
+          name="password"
+          value={formValues.password}
+          placeholder="Your password"
+          className="form-control form-control-lg"
+          onChange={onFormValueChange}
+        />
+      </FormControl>
 
-          <Input
-            id="password"
-            type="password"
-            name="password"
-            value={formValues.password}
-            placeholder="Your password"
-            className="form-control"
-            onChange={onFormValueChange}
-          />
-        </div>
+      {/** Remember me */}
+      <Checkbox />
 
-        <button
-          className="btn btn-primary btn-block"
-          type="submit"
-        >
-          Sign In
-        </button>
-      </form>
-    </>
+      {/** Submit */}
+      <Button
+        block
+        size="lg"
+      >
+        Sign In
+      </Button>
+
+      <div className="mt-4 mb-4 text-dark text-center">
+        <p>Not a member ? &nbsp;
+          <Link to="/register">Register</Link></p>
+      </div>
+    </form>
   )
 }
 
