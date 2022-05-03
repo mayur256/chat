@@ -14,6 +14,7 @@ import { isLoggedIn } from "../utilities/Common";
 // Layouts
 const Login = React.lazy((): Promise<{ default: ComponentType }> => import('../components/layouts/Login'));
 const Home = React.lazy((): Promise<{ default: ComponentType }> => import('../components/layouts/Home'));
+const Register = React.lazy((): Promise<{ default: ComponentType }> => import('../components/layouts/Register'));
 
 // Routes definition
 const routes = [
@@ -29,6 +30,11 @@ const routes = [
     name: 'login',
     path: 'login',
     component: <Login />,
+  },
+  {
+    name: 'register',
+    path: 'register',
+    component: <Register />,
   },
 ];
 

@@ -7,11 +7,11 @@ import { Link } from "react-router-dom";
 // Atoms / Molecules components
 import Input from "../atoms/Input";
 import Button from "../atoms/Button";
+import FormControl from "../molecules/FormControl";
+import Checkbox from "../molecules/Checkbox";
 
 // Utilities
 import { login } from "../../utilities/Common";
-import FormControl from "../molecules/FormControl";
-import Checkbox from "../molecules/Checkbox";
 
 // Component Definition
 const Login = (): ReactElement => {

@@ -12,7 +12,7 @@ import MessageArea from "./MessageArea";
 import { ContactThreadType, MessageType } from '../types';
 
 // Utilities
-import { delay } from "../../utilities/Common";
+// import { delay } from "../../utilities/Common";
 import { mockedContactThread } from "../../utilities/mocks";
 
 // Types definitions for socket.io

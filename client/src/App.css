@@ -227,7 +227,7 @@ body,html{
   cursor: pointer;
 }
 
-.login-form {
+.login-form, .signup-form {
   height: 50vh;
   margin: 25vh 0 0 0;
 }
