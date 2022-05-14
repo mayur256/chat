@@ -2,6 +2,8 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors'
+import connectHandler from "./config/db.config";
+import assembleRoutes from "./api-routes";
 
 // Types definitions for socket.io
 interface ServerToClientEvents {
@@ -33,14 +35,20 @@ class App {
   public httpServer: any;
   private ioSocket: any;
 
+  // application constructor
   constructor() {
     // Initializing http, express and socket server
     this.express = express();
+    this.parseJsonBody();
     // enable CORS middleware
     this.enableCors();
     this.createHttpServer();
     this.createSocketServer();
     
+    // establish connection with database
+    this.dbConnect();
+    // enable routing
+    this.mountRoutes();
     // waits for connection event on socket
     this.captureSocketConnectionEvent()
   }
@@ -57,6 +65,11 @@ class App {
         origin: '*',
       },
     });
+  }
+
+  parseJsonBody = () => {
+    this.express.use(express.urlencoded({ extended: true }));
+    this.express.use(express.json());
   }
 
   captureSocketConnectionEvent = () => {
@@ -89,8 +102,24 @@ class App {
 
     this.express.use(cors(corsOptions));
   }
-}
 
+  // Initialize db connection
+  dbConnect = () => {
+    try {
+      connectHandler.connect();
+    } catch (err) {
+      connectHandler.disconnect();
+    }
+  }
+
+  // register routes into the application
+  mountRoutes = () => {
+    const router = express.Router();
+    assembleRoutes(router);
+    this.express.use('/api', router);
+  };
+
+}
 
 // Exports an instance of http server
 export default new App().httpServer;
