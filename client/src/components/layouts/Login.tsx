@@ -15,6 +15,9 @@ import FormControl from "../molecules/FormControl";
 import Checkbox from "../molecules/Checkbox";
 import ErrorMessage from "../atoms/ErrorMessage";
 
+// API service call utilities
+import { login } from "../../api/auth";
+
 // Utilities
 // import { login } from "../../utilities/Common";
 
@@ -32,8 +35,8 @@ const validationSchema = Yup.object().shape({
 const Login = (): ReactElement => {
   // hooks
   // formik configuration
-  const onSubmit = (values: any):void => {
-    console.log(values);
+  const onSubmit = async (values: any): Promise<void> => {
+    await login(values);
   }
   const formik = useFormik({
     initialValues: {
@@ -43,8 +46,6 @@ const Login = (): ReactElement => {
     onSubmit,
     validationSchema,
   });
-  /*const { errors, touched, values } = formik;
-  console.log({ errors, touched, values });*/
 
   return (
     <form className="login-form text-dodgerblue needs-validation" onSubmit={formik.handleSubmit}>

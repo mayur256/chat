@@ -14,6 +14,9 @@ import Button from "../atoms/Button";
 import FormControl from "../molecules/FormControl";
 import ErrorMessage from "../atoms/ErrorMessage";
 
+// API services
+import { register } from "../../api/auth";
+
 // validation schema definition with Yup
 const validationSchema = Yup.object().shape({
     firstName: Yup.string()
@@ -46,8 +49,10 @@ const validationSchema = Yup.object().shape({
 const Register = (): ReactElement => {
     // hooks
     // formik configuration
-    const onSubmit = (values: any): void => {
-        console.log(values);
+    const onSubmit = async(values: any): Promise<void> => {
+        const { firstName, lastName, email, password } = values;
+        const response = await register({ firstName, lastName, email, password });
+        console.log(response);
     }
     const formik = useFormik({
         initialValues: {
@@ -60,8 +65,6 @@ const Register = (): ReactElement => {
         onSubmit,
         validationSchema,
     });
-    /*const { errors, touched, values } = formik;
-    console.log({ errors, touched, values });*/
 
     return (
         <form className="signup-form" onSubmit={formik.handleSubmit}>
