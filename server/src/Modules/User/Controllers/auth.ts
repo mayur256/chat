@@ -57,6 +57,7 @@ class Authentication {
             const loginResult = await authManager.login(req.body);
             // In case user does not exists or password does not match return error
             if (!loginResult) {
+                resPayload.error = true;
                 resPayload.status = 400;
                 resPayload.data = 'Something went wrong!';
             } else {

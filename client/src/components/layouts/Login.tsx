@@ -1,5 +1,5 @@
 // Top Level imports
-import React, { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 
 // react - router
 import { Link } from "react-router-dom";
@@ -14,12 +14,14 @@ import Button from "../atoms/Button";
 import FormControl from "../molecules/FormControl";
 import Checkbox from "../molecules/Checkbox";
 import ErrorMessage from "../atoms/ErrorMessage";
+import Alert, { AlertTypes } from "../atoms/Alert";
 
 // API service call utilities
 import { login } from "../../api/auth";
 
 // Utilities
-// import { login } from "../../utilities/Common";
+import { API_RESPONSE_STATUS } from "../../utilities/Constants";
+import { storeUserInLocalStorage } from "../../utilities/Common";
 
 // validation schema definition with Yup
 const validationSchema = Yup.object().shape({
@@ -33,10 +35,26 @@ const validationSchema = Yup.object().shape({
 
 // Component Definition
 const Login = (): ReactElement => {
+  // state definitions
+  const [alert, setAlert] = useState<{type: AlertTypes, message: string}>({
+    type: 'danger',
+    message: ''
+  });
+
   // hooks
   // formik configuration
   const onSubmit = async (values: any): Promise<void> => {
-    await login(values);
+    // reset alert message
+    setAlert(prevState => ({ ...prevState, message: '' }));
+
+    // invoke API
+    const response = await login(values);
+    if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
+      storeUserInLocalStorage(values.email);
+      window.location.href = '/';
+    } else {
+      setAlert(prevState => ({ ...prevState, message: response.data as string }));
+    }
   }
   const formik = useFormik({
     initialValues: {
@@ -51,6 +69,13 @@ const Login = (): ReactElement => {
     <form className="login-form text-dodgerblue needs-validation" onSubmit={formik.handleSubmit}>
       <h3 className="mb-4 text-center font-weight-bold">Welcome</h3>
       <legend className="mb-3 text-body">Please sign in to continue</legend>
+
+      {alert.message && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+        />
+      )}
 
       {/** Username / Email */}
       <FormControl className="form-floating mb-4">

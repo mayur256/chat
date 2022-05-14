@@ -97,7 +97,7 @@ class App {
 
   enableCors() {
     const corsOptions = {
-      origin: 'http://localhost:3000/',
+      origin: 'http://localhost:3000',
     };
 
     this.express.use(cors(corsOptions));

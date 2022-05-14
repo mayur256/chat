@@ -1,15 +1,22 @@
 import { fetchWrapper } from "../utilities/fetchWrapper"
 
-interface LoginBody {
+interface IResponse {
+    status: number;
+    error: boolean;
+}
+type LoginBody =  {
     email: string;
     password: string;
+}
+interface LoginResponse extends IResponse {
+    data: LoginBody | string;
 }
 /** 
  * @param {string} email
  * @param {string} password
  * @returns Promise<LoginBody>
  */
-export const login = ({email, password}: LoginBody): Promise<LoginBody> => {
+export const login = ({email, password}: LoginBody): Promise<LoginResponse> => {
     return new Promise((resolve) => {
         (async () => {
             const response = await fetchWrapper(

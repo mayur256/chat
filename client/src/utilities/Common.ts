@@ -8,11 +8,9 @@
  * @description this function checks whether user is logged in or not
  */
 export const isLoggedIn = (): boolean => {
-  const user = JSON.parse(window.localStorage.getItem('user') as any);
-  if (user?.email) {
-    return true;
-  }
-  return false;
+  //const user = JSON.parse(window.localStorage.getItem('log_user') as any);
+  console.log(Boolean(window.localStorage.getItem('log_user')))
+  return Boolean(window.localStorage.getItem('log_user'))
 };
 
 /**
@@ -54,4 +52,17 @@ export const delay = (ms: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(resolve, ms);
   });
+};
+
+export const storeUserInLocalStorage = (email: string) => {
+  let user = JSON.parse(window.localStorage.getItem('log_user') as string)
+  if (!user) {
+    user = {
+      email
+    };
+  } else {
+    user.email = email;
+  }
+
+  window.localStorage.setItem('log_user', JSON.stringify(user))
 }

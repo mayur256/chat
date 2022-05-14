@@ -1,3 +1,6 @@
+// Utilities
+import { BASE_API_URL } from "./Constants";
+
 type Method = 'GET' | 'POST' | 'DELETE' | 'UPDATE';
 
 interface FetchRequestOptions {
@@ -24,6 +27,6 @@ export const fetchWrapper = async (
         requestOptions.body = JSON.stringify(payload);
     }
 
-    return fetch(url, requestOptions)
+    return fetch(`${BASE_API_URL}${url}`, requestOptions)
         .catch(error => console.log(error))
 }
