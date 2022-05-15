@@ -9,7 +9,6 @@
  */
 export const isLoggedIn = (): boolean => {
   //const user = JSON.parse(window.localStorage.getItem('log_user') as any);
-  console.log(Boolean(window.localStorage.getItem('log_user')))
   return Boolean(window.localStorage.getItem('log_user'))
 };
 

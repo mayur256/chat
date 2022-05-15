@@ -48,7 +48,7 @@ export const register = ({
     lastName,
     email,
     password,
-}: RegisterBody): Promise<RegisterBody> => {
+}: RegisterBody): Promise<IResponse & {data: RegisterBody | string}> => {
     return new Promise(resolve => {
         (async () => {
             const response = await fetchWrapper(

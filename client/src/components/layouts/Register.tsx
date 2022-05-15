@@ -1,5 +1,5 @@
 // Top level imports
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 
 // react - router
 import { Link } from "react-router-dom";
@@ -13,9 +13,11 @@ import Input from "../atoms/Input";
 import Button from "../atoms/Button";
 import FormControl from "../molecules/FormControl";
 import ErrorMessage from "../atoms/ErrorMessage";
+import Alert, { AlertTypes } from "../atoms/Alert";
 
 // API services
 import { register } from "../../api/auth";
+import { API_RESPONSE_STATUS } from "../../utilities/Constants";
 
 // validation schema definition with Yup
 const validationSchema = Yup.object().shape({
@@ -47,12 +49,30 @@ const validationSchema = Yup.object().shape({
 
 // Component definition
 const Register = (): ReactElement => {
+    // state definitions
+    const [alert, setAlert] = useState<{ type: AlertTypes, message: string }>({
+        type: 'danger',
+        message: ''
+    });
+
     // hooks
     // formik configuration
-    const onSubmit = async(values: any): Promise<void> => {
+    const onSubmit = async (values: any): Promise<void> => {
+        // reset alert message
+        setAlert(prevState => ({ ...prevState, message: '' }));
+
         const { firstName, lastName, email, password } = values;
+        //invoke register API
         const response = await register({ firstName, lastName, email, password });
-        console.log(response);
+        if (response.status === API_RESPONSE_STATUS.SUCCESS && !response.error) {
+            formik.resetForm();
+            setAlert({
+                type: 'success',
+                message: 'Congratulations! Account created. Please proceed to login'
+            });
+        } else {
+            setAlert(prev => ({ ...prev, message: response.data as string }));
+        }
     }
     const formik = useFormik({
         initialValues: {
@@ -69,6 +89,13 @@ const Register = (): ReactElement => {
     return (
         <form className="signup-form" onSubmit={formik.handleSubmit}>
             <legend className="mb-4 text-center">Please register to begin using this application</legend>
+
+            {alert.message && (
+                <Alert
+                    message={alert.message}
+                    type={alert.type}
+                />
+            )}
 
             {/** Name Section */}
             <div className="row">
