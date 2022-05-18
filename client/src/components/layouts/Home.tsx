@@ -46,7 +46,8 @@ const Home = (): ReactElement => {
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
   const [messages, setMessages] = useState<MessageType[]>(mockMessages);
   const [contacts, setContacts] = useState<ContactThreadType[]>([]);
-  const [selectedContact, setSelectedContact] = useState<ContactThreadType>(mockedContactThread[0]); 
+  const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[]>([]);
+  const [selectedContact, setSelectedContact] = useState<ContactThreadType>(mockedContactThread[0]);
 
   // hooks
   // const navigate = useNavigate();
@@ -60,7 +61,7 @@ const Home = (): ReactElement => {
   // componentDidMount
   useEffect((): void => {
     // establish connection with server
-    const socketInstance: Socket = io("http://localhost:4000");
+    const socketInstance: Socket = io("http://localhost:4001");
     setSocket(socketInstance);
     fetchUsers();
     notifyServerOfSignIn(socketInstance);
@@ -71,6 +72,7 @@ const Home = (): ReactElement => {
     // mimick API call
     //await delay(2000);
     setContacts(mockedContactThread);
+    setFilteredContacts(mockedContactThread);
   }
 
   // user logout event handler
@@ -95,7 +97,7 @@ const Home = (): ReactElement => {
 
   // contact selected
   const onContactSelected = (contactId: string): void => {
-    const transformedContacts: ContactThreadType[] = contacts.map((contact: ContactThreadType): ContactThreadType => { 
+    const transformedContacts: ContactThreadType[] = filteredContacts.map((contact: ContactThreadType): ContactThreadType => { 
       if (contactId === contact.id) {
         return {
           ...contact,
@@ -109,19 +111,33 @@ const Home = (): ReactElement => {
       }
     });
 
-    setContacts(transformedContacts);
+    setFilteredContacts(transformedContacts);
 
     // find and set selected contact
     const contact = transformedContacts.find(({ id }): boolean => contactId === id);
     if (contact) setSelectedContact(contact);
   }
 
+  // handles filtering of contacts based on user search query
+  const onSearchInitiated = (searchKey: string): void => {
+    if (!searchKey.trim()) {
+      setFilteredContacts(contacts);
+      return;
+    }
+
+    const filterResult = contacts.filter(
+      (contact: ContactThreadType) => contact.name.toLowerCase().includes(searchKey.toLowerCase())
+    );
+    setFilteredContacts(filterResult);
+  }
+
   // JSX Code
   return (
     <>
       <ContactsList
-        contacts={contacts}
+        contacts={filteredContacts}
         contactSelected={onContactSelected}
+        initiateSearch={onSearchInitiated}
       />
 
       {/** Chat Message Area */}

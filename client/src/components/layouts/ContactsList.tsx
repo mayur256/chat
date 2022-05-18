@@ -1,10 +1,13 @@
 // Top Level Imports
-import { useState } from "react"  
+import React, { useState } from "react"  
 
 // Atoms & Molecules
 import InputSearch from "../molecules/InputSearch"
 import ContactThread from "../molecules/ContactThread"
 import ContactThreads from "../organisms/ContactThreads"
+
+// Utilities
+import { debounce } from "../../utilities/Common"
 
 // type definitions
 import { ContactThreadType } from "../types"
@@ -12,16 +15,26 @@ import { ContactThreadType } from "../types"
 // props type definition
 interface IProps {
   contacts: ContactThreadType[];
-  contactSelected: (contactId: string)=> void
+  contactSelected: (contactId: string) => void;
+  initiateSearch: (searchKey: string) => void;
 }
 // Component definition
 const ContactsList = ({
   contacts,
-  contactSelected
+  contactSelected,
+  initiateSearch
 }: IProps) => {
   // State definition
   const [inputValue, setInputValue] = useState('');
 
+  const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const targetVal = (e.target as HTMLInputElement).value;
+    setInputValue(targetVal);
+    initiateSearch(targetVal);
+    debounce(() => {
+      initiateSearch(targetVal);
+    }, 1000)
+  }
   // JSX
   return (
     <div className="col-md-4 col-xl-3 chat">
@@ -29,10 +42,7 @@ const ContactsList = ({
         {/** Search Element */}
         <InputSearch
           value={inputValue}
-          onChange={(e) => {
-            const targetVal = (e.target as HTMLInputElement).value;
-            setInputValue(targetVal);
-          }}
+          onChange={handleInputChange}
         />
 
         {/** Contacts List */}
@@ -53,6 +63,10 @@ const ContactsList = ({
               )    
             })
           }
+
+          {!contacts.length && (
+            <div className="text-center text-white">No Contacts Found</div>
+          )}
 
         </ContactThreads>
 

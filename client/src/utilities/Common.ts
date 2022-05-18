@@ -53,6 +53,10 @@ export const delay = (ms: number): Promise<void> => {
   });
 };
 
+/**
+ * @param email {string}
+ * @description Store the given email into local storage
+ */
 export const storeUserInLocalStorage = (email: string) => {
   let user = JSON.parse(window.localStorage.getItem('log_user') as string)
   if (!user) {
@@ -64,4 +68,21 @@ export const storeUserInLocalStorage = (email: string) => {
   }
 
   window.localStorage.setItem('log_user', JSON.stringify(user))
+}
+
+/** 
+ * @param fn - a callback that i to be debounced 
+ * @param timeout
+ * @returns 
+ */
+export const debounce = (fn: () => void, timeout: number = 300) => {
+  let timer: any = null;
+
+  return (...args: any) => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout((): void => {
+      fn.apply(this, args)
+    }, timeout);
+
+  }
 }
