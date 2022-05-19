@@ -15,7 +15,6 @@ const options = {
 
 // Establish connection with mongoDB
 const connect = () => {
-    console.log("reached here");
     mongoose.connect(mongoURI, options)
         .then(() => {
             console.log("✅ ✅ ✅ --- Mongo DB connected --- ✅ ✅ ✅");
