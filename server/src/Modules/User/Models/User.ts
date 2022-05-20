@@ -3,11 +3,12 @@ import { Document, Schema, model } from 'mongoose';
 const modelName = 'User';
 
 // interface declaration for model
-interface IUserModel extends Document {
+export interface IUserModel extends Document {
     name: string;
     email: string;
     password: string;
     online: boolean;
+    avatar: string;
     created_at: Date | null;
     auth_mechanism?: string | null;
     auth_token?: string | null;
@@ -29,6 +30,11 @@ const userSchema: Schema = new Schema({
     },
 
     password: {
+        type: String,
+        required: true
+    },
+
+    avatar: {
         type: String,
         required: true
     },

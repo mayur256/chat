@@ -1,5 +1,5 @@
 // NPM modules
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { ResponsePayload } from "../../../utils//CommonTypes";
 
 // Service Managers

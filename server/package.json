@@ -11,7 +11,9 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
+    "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.13",
+    "@types/gravatar": "^1.8.3",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/node": "^17.0.21",
     "nodemon": "^2.0.15",
@@ -20,9 +22,11 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.17.3",
+    "gravatar": "^1.8.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.3",
     "socket.io": "^4.4.1"
