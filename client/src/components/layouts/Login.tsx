@@ -2,7 +2,7 @@
 import { ReactElement, useState } from "react";
 
 // react - router
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Formik & Yup
 import { useFormik } from "formik";
@@ -42,6 +42,7 @@ const Login = (): ReactElement => {
   });
 
   // hooks
+  const navigate = useNavigate();
   // formik configuration
   const onSubmit = async (values: any): Promise<void> => {
     // reset alert message
@@ -51,7 +52,7 @@ const Login = (): ReactElement => {
     const response = await login(values);
     if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
       storeUserInLocalStorage(values.email);
-      window.location.href = '/';
+      navigate('/');
     } else {
       setAlert(prevState => ({ ...prevState, message: response.data as string }));
     }
