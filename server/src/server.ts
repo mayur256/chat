@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors'
+import cookieParser from 'cookie-parser';
 import connectHandler from "./config/db.config";
 import assembleRoutes from "./api-routes";
 
@@ -39,6 +40,7 @@ class App {
   constructor() {
     // Initializing http, express and socket server
     this.express = express();
+    this.enableCookieParser();
     this.parseJsonBody();
     // enable CORS middleware
     this.enableCors();
@@ -119,6 +121,10 @@ class App {
     this.express.use('/api', router);
   };
 
+  // enable cookie-parser
+  enableCookieParser = () => {
+    this.express.use(cookieParser())
+  }
 }
 
 // Exports an instance of http server

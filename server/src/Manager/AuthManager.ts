@@ -2,6 +2,7 @@
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import gravatar from "gravatar";
 
 // Models
 import User from "../Modules/User/Models/User";
@@ -28,17 +29,20 @@ export default {
 
         try {
             //Instantiating User Model
-            newUser = new User({ name, email });
+            const avatar = gravatar.url(email, {
+                s: '200', //Size
+                r: 'pg', //Rating
+                d: 'mm' //Default
+            });
+            newUser = new User({ name, email, avatar });
             //Generate hashed password
             const hash = await bcrypt.hash(password, saltRounds);
             newUser.password = hash;
             //save the user in db
             await newUser.save();
         } catch (ex: any) {
-            if (ex.name === 'MongoServerError') {
-                throw ex;
-            }
             console.log(`Error in register manager :: ${ex.name}`);
+            throw ex;
         }
 
         return newUser;
