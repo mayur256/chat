@@ -6,30 +6,11 @@ import cookieParser from 'cookie-parser';
 import connectHandler from "./config/db.config";
 import assembleRoutes from "./api-routes";
 
-// Types definitions for socket.io
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-}
+// Controller
+import messageController from './Modules/Message/Controllers/message';
 
-interface ClientToServerEvents {
-  hello: () => void;
-}
-
-interface InterServerEvents {
-  ping: () => void;
-}
-
-interface Message {
-  type: string;
-  payload: string;
-  timestamp: string;
-}
-/*interface SocketData {
-  name: string;
-  age: number;
-}*/
+// type definitions
+import { ServerToClientEvents, ClientToServerEvents, Message, InterServerEvents } from './types';
 
 class App {
   private express: Application;
@@ -83,9 +64,6 @@ class App {
         // handle events or messages specific to a client
         this.handleClientEvents(clientSocket);
       });
-
-      // fired when socket is disconnected
-      clientSocket.on('disconnect', () => console.log('Client disconnected!'));
     });   
   }
 
@@ -94,7 +72,8 @@ class App {
   }
 
   handleClientMessage = (message: Message) => {
-    console.log(message);
+    // store the message via controller
+    messageController.storeMessage(message);
   }
 
   enableCors() {

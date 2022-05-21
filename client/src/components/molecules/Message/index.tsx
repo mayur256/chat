@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 
 // Atoms/ Molecules
 import MsgPayload from "../../atoms/MsgPayload"
-import MessageTime from "../../atoms/MessageTime";
+// import MessageTime from "../../atoms/MessageTime";
 
 // types
 import { MessageType } from '../../types';
@@ -21,7 +21,7 @@ const MessageContainer = ({
   return (
     <div className={`msg_container${send ?  '_send' : ''} text-center`}>
       <MsgPayload payload={ message.payload} />
-      <MessageTime time={message.timestamp} />
+      {/* <MessageTime time={message.timestamp} /> */}
     </div>
   )
 }

@@ -26,24 +26,11 @@ interface ClientToServerEvents {
   message: (message: MessageType) => void;
 }
 
-// message list
-const mockMessages: MessageType[] = [
-  {
-    payload: 'Hey Bro! How are you?',
-    timestamp: new Date().getTime(),
-    send: true,
-  },
-  {
-    payload: 'Hey Bro! How are you?',
-    timestamp: new Date().getTime(),
-  },
-];
-
 // Component definition
 const Home = (): ReactElement => {
   // state definitions
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
-  const [messages, setMessages] = useState<MessageType[]>(mockMessages);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const [contacts, setContacts] = useState<ContactThreadType[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[]>([]);
   const [selectedContact, setSelectedContact] = useState<ContactThreadType>();
@@ -86,9 +73,11 @@ const Home = (): ReactElement => {
   // send user message to server
   const sendMessage = (msgTxt: string): void => {
     const message: MessageType = {
+      from: '6287c13164341f9fa6e4480d',
+      to: selectedContact?._id ?? '',
       type: 'text',
       payload: msgTxt,
-      timestamp: new Date().getTime(),
+      sent_at: new Date(),
       send: true
     };
 

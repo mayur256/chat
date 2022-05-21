@@ -1,9 +1,12 @@
 // type for message
 export interface MessageType {
+    from: string;
+    to: string;
     payload: string;
-    timestamp: number;
+    sent_at: Date;
+    received_at?: Date;
     type?: string;
-    send?: boolean;
+    send?: boolean
 }
 
 export interface ContactThreadType {
