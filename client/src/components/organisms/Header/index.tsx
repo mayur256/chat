@@ -22,7 +22,7 @@ const Header = ({
   selectedContact
 }: IProps): ReactElement => {
   // Props destructuring to get data
-  const { name, avatarSrc, online } = selectedContact;
+  const { name, avatar, online } = selectedContact;
 
   return (
     <>
@@ -30,7 +30,7 @@ const Header = ({
         <div className="d-flex bd-highlight">
 
           <Avatar
-            src={avatarSrc}
+            src={avatar}
             online={online}
           />
 

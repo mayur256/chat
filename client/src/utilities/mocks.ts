@@ -9,9 +9,9 @@ function getMockedUsers(randomDataLength: number): ContactThreadType[] {
 
     for (let i = 0; i < randomDataLength; i++) {
         const mockUserSchema: ContactThreadType = {
-            id: faker.datatype.uuid(),
+            _id: faker.datatype.uuid(),
             name: faker.name.findName(),
-            avatarSrc: faker.image.avatar(),
+            avatar: faker.image.avatar(),
             online: faker.datatype.boolean(),
             isSelected: i === 0 ? !false : false,
         };

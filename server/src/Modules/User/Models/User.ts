@@ -34,6 +34,11 @@ const userSchema: Schema = new Schema({
         required: true
     },
 
+    online: {
+        type: Boolean,
+        default: false
+    },
+
     avatar: {
         type: String,
         required: true

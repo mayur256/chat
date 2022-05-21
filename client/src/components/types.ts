@@ -7,9 +7,15 @@ export interface MessageType {
 }
 
 export interface ContactThreadType {
-    id: string;
+    _id: string;
     name: string;
-    avatarSrc: string;
+    avatar: string;
     online: boolean;
-    isSelected: boolean;
+    isSelected?: boolean | undefined;
+}
+
+// Generic Response schematics
+export interface IResponse {
+    status: number;
+    error: boolean;
 }

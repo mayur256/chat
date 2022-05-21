@@ -9,7 +9,7 @@ import UserStatus from "../UserStatus";
 interface Props {
   name: string;
   avatarSrc: string;
-  isSelected: boolean;
+  isSelected?: boolean;
   onClicked?: () => void
   online?: boolean;
 }

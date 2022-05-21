@@ -2,11 +2,13 @@
 import { BASE_API_URL } from "./Constants";
 
 type Method = 'GET' | 'POST' | 'DELETE' | 'UPDATE';
+type Include = 'include';
 
 interface FetchRequestOptions {
     method: Method,
     headers: any,
-    body: any
+    body: any,
+    credentials: Include
 }
 
 export const fetchWrapper = async (
@@ -21,6 +23,7 @@ export const fetchWrapper = async (
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     };
 
     if (payload) {

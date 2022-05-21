@@ -10,7 +10,8 @@ class UserManager {
                 select({
                     name: 1,
                     email: 1,
-                    avatar: 1
+                    avatar: 1,
+                    online: 1
                 })
         } catch (ex) {
             console.log(`Exception in UserManager.getUsers :: ${ex}`);

@@ -1,9 +1,6 @@
 import { fetchWrapper } from "../utilities/fetchWrapper"
+import { IResponse } from "../components/types";
 
-interface IResponse {
-    status: number;
-    error: boolean;
-}
 type LoginBody =  {
     email: string;
     password: string;

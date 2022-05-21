@@ -53,12 +53,12 @@ const ContactsList = ({
             contacts.map((contact: ContactThreadType) => {
               return (
                 <ContactThread
-                  key={contact.id}
+                  key={contact._id}
                   name={contact.name}
                   online={contact.online}
-                  avatarSrc={contact.avatarSrc}
+                  avatarSrc={contact.avatar}
                   isSelected={contact.isSelected}
-                  onClicked={() => contactSelected(contact.id)}
+                  onClicked={() => contactSelected(contact._id)}
                 />
               )    
             })

@@ -11,9 +11,8 @@ import MessageArea from "./MessageArea";
 // types
 import { ContactThreadType, MessageType } from '../types';
 
-// Utilities
-// import { delay } from "../../utilities/Common";
-import { mockedContactThread } from "../../utilities/mocks";
+// API services
+import { getUsers } from "../../api/user";
 
 // Types definitions for socket.io
 interface ServerToClientEvents {
@@ -47,7 +46,7 @@ const Home = (): ReactElement => {
   const [messages, setMessages] = useState<MessageType[]>(mockMessages);
   const [contacts, setContacts] = useState<ContactThreadType[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[]>([]);
-  const [selectedContact, setSelectedContact] = useState<ContactThreadType>(mockedContactThread[0]);
+  const [selectedContact, setSelectedContact] = useState<ContactThreadType>();
 
   // hooks
   // const navigate = useNavigate();
@@ -71,8 +70,10 @@ const Home = (): ReactElement => {
   const fetchUsers = async(): Promise<void> => {
     // mimick API call
     //await delay(2000);
-    setContacts(mockedContactThread);
-    setFilteredContacts(mockedContactThread);
+    const payload = await getUsers();
+    setContacts(payload.data);
+    setFilteredContacts(payload.data);
+    setSelectedContact(payload.data[0])
   }
 
   // user logout event handler
@@ -98,7 +99,7 @@ const Home = (): ReactElement => {
   // contact selected
   const onContactSelected = (contactId: string): void => {
     const transformedContacts: ContactThreadType[] = filteredContacts.map((contact: ContactThreadType): ContactThreadType => { 
-      if (contactId === contact.id) {
+      if (contactId === contact._id) {
         return {
           ...contact,
           isSelected: true,
@@ -114,7 +115,7 @@ const Home = (): ReactElement => {
     setFilteredContacts(transformedContacts);
 
     // find and set selected contact
-    const contact = transformedContacts.find(({ id }): boolean => contactId === id);
+    const contact = transformedContacts.find(({ _id }): boolean => contactId === _id);
     if (contact) setSelectedContact(contact);
   }
 
@@ -141,11 +142,13 @@ const Home = (): ReactElement => {
       />
 
       {/** Chat Message Area */}
-      <MessageArea
-        selectedContact={selectedContact}
-        sendMessage={sendMessage}
-        messages={messages}
-      />
+      {selectedContact && (
+        <MessageArea
+          selectedContact={selectedContact}
+          sendMessage={sendMessage}
+          messages={messages}
+        />
+      )}
     </>
   )
   
