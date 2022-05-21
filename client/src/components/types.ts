@@ -6,7 +6,8 @@ export interface MessageType {
     sent_at: Date;
     received_at?: Date;
     type?: string;
-    send?: boolean
+    send?: boolean;
+    _id?: string;
 }
 
 export interface ContactThreadType {

@@ -13,6 +13,10 @@ import { ContactThreadType, MessageType } from '../types';
 
 // API services
 import { getUsers } from "../../api/user";
+import { getMessages } from "../../api/message";
+
+// Constants
+import { API_RESPONSE_STATUS } from "../../utilities/Constants";
 
 // Types definitions for socket.io
 interface ServerToClientEvents {
@@ -28,6 +32,8 @@ interface ClientToServerEvents {
 
 // Component definition
 const Home = (): ReactElement => {
+  const SOCKET_SERVER_ENDPOINT = "http://localhost:4001";
+  
   // state definitions
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
   const [messages, setMessages] = useState<MessageType[]>([]);
@@ -47,7 +53,7 @@ const Home = (): ReactElement => {
   // componentDidMount
   useEffect((): void => {
     // establish connection with server
-    const socketInstance: Socket = io("http://localhost:4001");
+    const socketInstance: Socket = io(SOCKET_SERVER_ENDPOINT);
     setSocket(socketInstance);
     fetchUsers();
     notifyServerOfSignIn(socketInstance);
@@ -58,9 +64,12 @@ const Home = (): ReactElement => {
     // mimick API call
     //await delay(2000);
     const payload = await getUsers();
-    setContacts(payload.data);
-    setFilteredContacts(payload.data);
-    setSelectedContact(payload.data[0])
+    if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status) {
+      setContacts(payload.data);
+      setFilteredContacts(payload.data);
+      setSelectedContact(payload.data[0]);
+      fetchMessages(payload.data[0]._id);
+    }
   }
 
   // user logout event handler
@@ -86,7 +95,7 @@ const Home = (): ReactElement => {
   }
 
   // contact selected
-  const onContactSelected = (contactId: string): void => {
+  const onContactSelected = (contactId: string): void => {    
     const transformedContacts: ContactThreadType[] = filteredContacts.map((contact: ContactThreadType): ContactThreadType => { 
       if (contactId === contact._id) {
         return {
@@ -106,6 +115,8 @@ const Home = (): ReactElement => {
     // find and set selected contact
     const contact = transformedContacts.find(({ _id }): boolean => contactId === _id);
     if (contact) setSelectedContact(contact);
+
+    fetchMessages(contactId);
   }
 
   // handles filtering of contacts based on user search query
@@ -119,6 +130,16 @@ const Home = (): ReactElement => {
       (contact: ContactThreadType) => contact.name.toLowerCase().includes(searchKey.toLowerCase())
     );
     setFilteredContacts(filterResult);
+  };
+
+  // fetches messages based on selected contact
+  const fetchMessages = async (threadId: string) => {
+    if (threadId) {
+      const response = await getMessages(threadId);
+      if (!response.error && API_RESPONSE_STATUS.SUCCESS === response.status) {
+        setMessages(response.data);
+      }
+    }
   }
 
   // JSX Code

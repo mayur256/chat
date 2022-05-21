@@ -18,8 +18,8 @@ interface IProps {
 const Body = ({messages}: IProps): ReactElement => {
   return (
     <div className="card-body msg_card_body">
-      {messages.map((message: MessageType): ReactElement => (
-        <MessageContainer send={message.send} key={message.sent_at.toDateString()}>
+      {Boolean(messages.length) && messages.map((message: MessageType): ReactElement => (
+        <MessageContainer send={message.send} key={message._id}>
           <Avatar
             src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
             inMsg
