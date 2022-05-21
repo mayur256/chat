@@ -26,8 +26,11 @@ class User {
             const users = await userManager.getUsers(req.body.decoded.id);
             if (users) resPayload.data = users;
         } catch (ex) {
-
+            resPayload.error = true;
+            resPayload.status = 500;
+            resPayload.data = SERVER_ERROR;
         }
+        
         res.json(resPayload);
     }
 }

@@ -10,7 +10,7 @@ import assembleRoutes from "./api-routes";
 import messageController from './Modules/Message/Controllers/message';
 
 // type definitions
-import { ServerToClientEvents, ClientToServerEvents, Message, InterServerEvents } from './types';
+import { ServerToClientEvents, ClientToServerEvents, Message, InterServerEvents } from './utils/CommonTypes';
 
 class App {
   private express: Application;

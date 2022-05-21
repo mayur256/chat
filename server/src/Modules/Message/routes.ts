@@ -8,5 +8,5 @@ import message from "./Controllers/message";
 import { verifyToken } from "../../middlewares/verifyToken";
 
 export default function(router : Router) {
-    router.get('/messages', verifyToken, message.getMessages);
+    router.get('/messages/:threadId', verifyToken, message.getMessages);
 }
