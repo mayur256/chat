@@ -1,15 +1,20 @@
 // Top level imports
 import { ReactElement, ReactNode } from "react";
 
+// types
+import { MessageType } from "../../types";
+
 // type definitions for props
 type CProps = {
   children: ReactNode | ReactNode[],
-  send?: boolean;
+ message: MessageType
 }
 const MessageContainer = ({
   children,
-  send = false
+  message
 }: CProps): ReactElement => {
+  const send = message.from === '6287c13164341f9fa6e4480d';
+
   return (
     <div className={`d-block mb-4 clearfix`}>
       <div

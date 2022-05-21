@@ -9,15 +9,14 @@ import { MessageType } from '../../types';
 
 // type definition for props
 interface IProps {
-  send?: boolean;
   message: MessageType;
 }
 
 // Component definition
 const MessageContainer = ({
-  send = false,
   message,
 }: IProps): ReactElement => {
+  const send = message.from === '6287c13164341f9fa6e4480d';
   return (
     <div className={`msg_container${send ?  '_send' : ''} text-center`}>
       <MsgPayload payload={ message.payload} />
