@@ -10,6 +10,6 @@ export default function (router: any) {
     router.post('/register', auth.register);
     router.post('/login', auth.login);
 
-    // private users
+    // private routes
     router.get('/users', verifyToken, user.getUsers);
 }
