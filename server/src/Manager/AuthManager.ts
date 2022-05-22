@@ -66,6 +66,7 @@ export default {
                     const token = createJWT(payload);
 
                     result = {
+                        _id: user._id,
                         token,
                         name: user.name,
                         email,

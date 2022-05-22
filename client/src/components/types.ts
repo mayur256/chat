@@ -23,3 +23,10 @@ export interface IResponse {
     status: number;
     error: boolean;
 }
+
+export interface IAuthUser {
+    _id: string;
+    name: string;
+    email: string;
+    password?: string;
+}

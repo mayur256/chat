@@ -1,3 +1,6 @@
+// type definitions
+import { IAuthUser } from "../components/types";
+
 /**
  * common utility functions that will be shared by the application
  */
@@ -57,17 +60,23 @@ export const delay = (ms: number): Promise<void> => {
  * @param email {string}
  * @description Store the given email into local storage
  */
-export const storeUserInLocalStorage = (email: string) => {
-  let user = JSON.parse(window.localStorage.getItem('log_user') as string)
-  if (!user) {
-    user = {
-      email
-    };
-  } else {
-    user.email = email;
-  }
-
+export const storeUserInLocalStorage = (user: IAuthUser): void => {
   window.localStorage.setItem('log_user', JSON.stringify(user))
+}
+
+/**
+ * @description removes the logged in user data from local storage
+ */
+export const removeAuthUserFromStorage = (): void => {
+  window.localStorage.removeItem('log_user');
+}
+
+/**
+ * @returns {IAuthUser | null}
+ * @description returns auth user from local storage
+ */
+export const storageToState = (): IAuthUser | null => {
+  return JSON.parse(localStorage.getItem('log_user') as string);
 }
 
 /** 
