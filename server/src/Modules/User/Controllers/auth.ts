@@ -61,9 +61,9 @@ class Authentication {
                 resPayload.status = 400;
                 resPayload.data = 'Something went wrong!';
             } else {
-                const { name, email, token } = loginResult;
+                const { name, email, token, _id } = loginResult;
                 res.setHeader('Set-Cookie', `authorization=${token}; HttpOnly; SameSite=None; Secure; Max-Age=99999999`);
-                resPayload.data = { name, email };
+                resPayload.data = { name, email, _id };
             }
         } catch (ex: any) {
             resPayload.error = true;

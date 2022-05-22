@@ -1,6 +1,10 @@
 // Top level imports
 import { ReactElement, ReactNode } from "react";
 
+// Redux hooks
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/types";
+
 // types
 import { MessageType } from "../../types";
 
@@ -13,7 +17,8 @@ const MessageContainer = ({
   children,
   message
 }: CProps): ReactElement => {
-  const send = message.from === '6287c13164341f9fa6e4480d';
+  const authUserId = useSelector((state: RootState) => state.user._id);
+  const send = message.from === authUserId;
 
   return (
     <div className={`d-block mb-4 clearfix`}>

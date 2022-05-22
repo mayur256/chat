@@ -1,19 +1,15 @@
 import { fetchWrapper } from "../utilities/fetchWrapper"
-import { IResponse } from "../components/types";
+import { IResponse, IAuthUser } from "../components/types";
 
-type LoginBody =  {
-    email: string;
-    password: string;
-}
 interface LoginResponse extends IResponse {
-    data: LoginBody | string;
+    data: IAuthUser | string;
 }
 /** 
  * @param {string} email
  * @param {string} password
  * @returns Promise<LoginBody>
  */
-export const login = ({email, password}: LoginBody): Promise<LoginResponse> => {
+export const login = ({email, password}: Partial<IAuthUser>): Promise<LoginResponse> => {
     return new Promise((resolve) => {
         (async () => {
             const response = await fetchWrapper(
@@ -28,7 +24,7 @@ export const login = ({email, password}: LoginBody): Promise<LoginResponse> => {
     })
 }
 
-interface RegisterBody extends LoginBody {
+interface RegisterBody extends IAuthUser {
     firstName: string;
     lastName: string;
 };

@@ -1,5 +1,9 @@
 import { ReactElement } from "react";
 
+// Redux hooks
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store/types";
+
 // Atoms/ Molecules
 import MsgPayload from "../../atoms/MsgPayload"
 // import MessageTime from "../../atoms/MessageTime";
@@ -16,7 +20,8 @@ interface IProps {
 const MessageContainer = ({
   message,
 }: IProps): ReactElement => {
-  const send = message.from === '6287c13164341f9fa6e4480d';
+  const authUserId = useSelector((state: RootState) => state.user._id);
+  const send = message.from === authUserId;
   return (
     <div className={`msg_container${send ?  '_send' : ''} text-center`}>
       <MsgPayload payload={ message.payload} />

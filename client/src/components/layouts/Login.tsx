@@ -2,7 +2,7 @@
 import { ReactElement, useState } from "react";
 
 // react - router
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // Formik & Yup
 import { useFormik } from "formik";
@@ -22,6 +22,7 @@ import { login } from "../../api/auth";
 // Utilities
 import { API_RESPONSE_STATUS } from "../../utilities/Constants";
 import { storeUserInLocalStorage } from "../../utilities/Common";
+import { IAuthUser } from "../types";
 
 // validation schema definition with Yup
 const validationSchema = Yup.object().shape({
@@ -42,7 +43,7 @@ const Login = (): ReactElement => {
   });
 
   // hooks
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   // formik configuration
   const onSubmit = async (values: any): Promise<void> => {
     // reset alert message
@@ -51,8 +52,8 @@ const Login = (): ReactElement => {
     // invoke API
     const response = await login(values);
     if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
-      storeUserInLocalStorage(values.email);
-      navigate('/');
+      storeUserInLocalStorage(response.data as IAuthUser);
+      window.location.href = '/';
     } else {
       setAlert(prevState => ({ ...prevState, message: response.data as string }));
     }
