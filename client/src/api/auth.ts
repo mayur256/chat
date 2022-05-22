@@ -24,9 +24,11 @@ export const login = ({email, password}: Partial<IAuthUser>): Promise<LoginRespo
     })
 }
 
-interface RegisterBody extends IAuthUser {
+interface RegisterBody {
     firstName: string;
     lastName: string;
+    email: string;
+    password: string;
 };
 
 /**
