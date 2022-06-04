@@ -16,6 +16,7 @@ class App {
   private express: Application;
   public httpServer: any;
   private ioSocket: any;
+  private activeClientSocket: any = null;
 
   // application constructor
   constructor() {
@@ -59,21 +60,26 @@ class App {
     // fired when a new connection is established
     this.ioSocket.on('connection', (clientSocket: any) => {
       // sign in event from client
-      clientSocket.on('signIn', () => {
+      this.activeClientSocket = clientSocket;
+      this.activeClientSocket.on('signIn', () => {
         // at this point client is signed in
         // handle events or messages specific to a client
-        this.handleClientEvents(clientSocket);
+        this.handleClientEvents();
       });
     });   
   }
 
-  handleClientEvents = (clientSocket: any) => {
-    clientSocket.on('message', this.handleClientMessage);
+  handleClientEvents = () => {
+    this.activeClientSocket.on('message', this.handleClientMessage);
   }
 
   handleClientMessage = (message: Message) => {
     // store the message via controller
-    messageController.storeMessage(message);
+    try {
+      messageController.storeMessage(message);
+    } catch (ex: any) {
+      console.log(`Error while storing client message in database`)
+    }
   }
 
   enableCors() {
@@ -104,7 +110,36 @@ class App {
   enableCookieParser = () => {
     this.express.use(cookieParser())
   }
+
+  // getter for httpServer
+  getHttpServer = () => {
+    return this.httpServer;
+  }
+
+  // getter for socket server
+  getSocketInstance = () => {
+    return this.ioSocket;
+  }
+
+  // getter for current connected client socket
+  getClientSocket = () => {
+    return this.activeClientSocket;
+  }
+
+  // getter for socket server
+  getSocketServer = () => {
+    return this.ioSocket;
+  }
 }
 
+// Instantiate App
+const app = new App();
+
 // Exports an instance of http server
-export default new App().httpServer;
+export default app.getHttpServer();
+
+// Exports an instance of socket
+export const clientSocket = app.getClientSocket();
+
+// Export an instance of server socket
+export const serverSocket = app.getSocketServer();

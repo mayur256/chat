@@ -23,6 +23,7 @@ interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (e: number) => void) => void;
+  echoMessage: (msg: MessageType) => void;
 }
 
 interface ClientToServerEvents {
@@ -57,6 +58,7 @@ const Home = (): ReactElement => {
     setSocket(socketInstance);
     fetchUsers();
     notifyServerOfSignIn(socketInstance);
+    registerSocketServerEvents(socketInstance);
   }, []);
 
   // invoke API to fetch users
@@ -91,7 +93,6 @@ const Home = (): ReactElement => {
     };
 
     socket?.emit('message', message);
-    setMessages(prevMessages => ([...prevMessages, message]));
   }
 
   // contact selected
@@ -133,13 +134,23 @@ const Home = (): ReactElement => {
   };
 
   // fetches messages based on selected contact
-  const fetchMessages = async (threadId: string) => {
+  const fetchMessages = async (threadId: string): Promise<void> => {
     if (threadId) {
       const response = await getMessages(threadId);
       if (!response.error && API_RESPONSE_STATUS.SUCCESS === response.status) {
         setMessages(response.data);
       }
     }
+  }
+
+  // register server to client events
+  const registerSocketServerEvents = (socket: Socket): void => {
+    socket?.on('echoMessage', handleEchoedMessage);
+  }
+
+  // handles echoed mesage from server
+  const handleEchoedMessage = (message: MessageType): void => {
+    setMessages(prevMsg => [...prevMsg, message]);
   }
 
   // JSX Code

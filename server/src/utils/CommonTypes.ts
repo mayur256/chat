@@ -9,10 +9,13 @@ export interface ServerToClientEvents {
     noArg: () => void;
     basicEmit: (a: number, b: string, c: Buffer) => void;
     withAck: (d: string, callback: (e: number) => void) => void;
+    echoMessage: (msg: Message) => void;
 }
 
 export interface ClientToServerEvents {
     hello: () => void;
+    signIn: () => void;
+    message: (message: Message) => void;
 }
 
 export interface InterServerEvents {
@@ -26,6 +29,7 @@ export interface Message {
     sent_at: Date;
     received_at?: Date;
     type?: string;
+    _id?: string;
 }
 /*interface SocketData {
   name: string;

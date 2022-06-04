@@ -4,8 +4,12 @@ import { Request, Response } from "express";
 // managers
 import messageManager from "../../../Manager/MessageManager";
 
+// Socket instances 
+import { serverSocket } from "../../../server";
+
 // types
 import { Message as IMessage, ResponsePayload } from "../../../utils/CommonTypes";
+import { IMessageModel } from "../Models/Message";
 
 // Constants
 import { SERVER_ERROR } from "../../../utils/Constants";
@@ -46,7 +50,27 @@ class Message {
      */
     storeMessage = async (msgPayload: IMessage): Promise<void> => {
         try {
-            await messageManager.storeMessage(msgPayload);
+            const createdMsg: IMessageModel = await messageManager.storeMessage(msgPayload);
+            const {
+                _id,
+                from,
+                to,
+                payload,
+                sent_at,
+                type,
+                received_at
+            } = createdMsg;
+            
+            // echo the created message back to clients
+            serverSocket.emit('echoMessage', {
+                _id,
+                from,
+                to,
+                payload,
+                sent_at,
+                type,
+                received_at
+            });
         } catch (ex) {
             console.log(`Error in Message Controller :: ${ex}`);
         }

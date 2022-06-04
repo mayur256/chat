@@ -10,7 +10,7 @@ export default {
     // message store handler
     storeMessage: async (msgPayload: IMessage) => {
         try {
-            await Message.create(msgPayload);
+            return await Message.create(msgPayload);
         } catch (ex: any) {
             throw ex;
         }
