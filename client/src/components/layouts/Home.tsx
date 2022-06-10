@@ -5,6 +5,7 @@ import { ReactElement, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
 // atoms / molecules components
+import Navbar from "../organisms/Navbar";
 import ContactsList from "./ContactsList";
 import MessageArea from "./MessageArea";
 
@@ -156,12 +157,14 @@ const Home = (): ReactElement => {
   // JSX Code
   return (
     <>
+      <Navbar/>
+      
       <ContactsList
         contacts={filteredContacts}
         contactSelected={onContactSelected}
         initiateSearch={onSearchInitiated}
       />
-
+      
       {/** Chat Message Area */}
       {selectedContact && (
         <MessageArea

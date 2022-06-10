@@ -17,11 +17,18 @@ const userSlice = createSlice({
     reducers: {
         SET_CURRENT_USER: (state = initialState, action: PayloadAction<IAuthUser>) => {
             state = action.payload;
+        },
+
+        CLEAR_CURRENT_USER: (state = initialState) => {
+            state = initialState;
         }
     }
 });
 
 // actions
-export const { SET_CURRENT_USER } = userSlice.actions;
+export const {
+    SET_CURRENT_USER,
+    CLEAR_CURRENT_USER
+} = userSlice.actions;
 // reducer
 export default userSlice.reducer;
