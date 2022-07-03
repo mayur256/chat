@@ -1,5 +1,9 @@
-// top level imports
+// Top level imports
 import { ReactElement, useEffect, useState } from "react";
+
+// react-redux
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/types";
 
 // Socket IO reference
 import { io, Socket } from "socket.io-client";
@@ -45,6 +49,7 @@ const Home = (): ReactElement => {
 
   // hooks
   // const navigate = useNavigate();
+  const authUserId = useSelector((state: RootState) => state.user._id);
 
   // check if socket is connected
   // send signIn event to server
@@ -85,7 +90,7 @@ const Home = (): ReactElement => {
   // send user message to server
   const sendMessage = (msgTxt: string): void => {
     const message: MessageType = {
-      from: '6287c13164341f9fa6e4480d',
+      from: authUserId,
       to: selectedContact?._id ?? '',
       type: 'text',
       payload: msgTxt,

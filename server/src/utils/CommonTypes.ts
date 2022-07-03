@@ -14,7 +14,7 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
     hello: () => void;
-    signIn: () => void;
+    signIn: (payload: { userId: string }) => void;
     message: (message: Message) => void;
 }
 
@@ -35,3 +35,8 @@ export interface Message {
   name: string;
   age: number;
 }*/
+
+export interface IConnectedUser {
+    userId: string;
+    socketId: string;
+}

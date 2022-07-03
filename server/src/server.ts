@@ -12,6 +12,7 @@ import messageController from './Modules/Message/Controllers/message';
 // type definitions
 import { ServerToClientEvents, ClientToServerEvents, Message, InterServerEvents } from './utils/CommonTypes';
 
+// Application Class
 class App {
   private express: Application;
   public httpServer: any;
@@ -61,7 +62,7 @@ class App {
     this.ioSocket.on('connection', (clientSocket: any) => {
       // sign in event from client
       this.activeClientSocket = clientSocket;
-      this.activeClientSocket.on('signIn', () => {
+      this.activeClientSocket.on('signIn', ({userId}: any) => {
         // at this point client is signed in
         // handle events or messages specific to a client
         this.handleClientEvents();
@@ -77,6 +78,12 @@ class App {
     // store the message via controller
     try {
       messageController.storeMessage(message);
+      /*const toBeEchoedMsg = {
+        _id: Math.floor(Math.random() * 1000000000),
+        ...message
+      }
+
+      this.ioSocket.emit('echoMessage', toBeEchoedMsg);*/
     } catch (ex: any) {
       console.log(`Error while storing client message in database`)
     }
