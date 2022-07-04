@@ -62,7 +62,7 @@ class App {
     this.ioSocket.on('connection', (clientSocket: any) => {
       // sign in event from client
       this.activeClientSocket = clientSocket;
-      this.activeClientSocket.on('signIn', ({userId}: any) => {
+      this.activeClientSocket.on('signIn', () => {
         // at this point client is signed in
         // handle events or messages specific to a client
         this.handleClientEvents();
