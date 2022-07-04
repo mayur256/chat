@@ -23,7 +23,7 @@ const MessageArea = ({
   messages,
 }: IProps): ReactElement => {
   return (
-    <div className="col-md-8 col-xl-6 chat">
+    <div className="col-md-8 col-xl-6 col-sm-7 chat">
       <div className="card">
         
         {/** Message Header */}
