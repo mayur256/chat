@@ -30,3 +30,18 @@ export interface IAuthUser {
     email: string;
     password?: string;
 }
+
+// Types definitions for socket.io
+export interface ServerToClientEvents {
+    noArg: () => void;
+    basicEmit: (a: number, b: string, c: Buffer) => void;
+    withAck: (d: string, callback: (e: number) => void) => void;
+    echoMessage: (msg: MessageType) => void;
+    isOnline: (userId: string) => void;
+}
+
+export interface ClientToServerEvents {
+    signIn: (userId: string) => void;
+    message: (message: MessageType) => void;
+    disconnect: () => void;
+}

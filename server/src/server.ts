@@ -8,9 +8,14 @@ import assembleRoutes from "./api-routes";
 
 // Controller
 import messageController from './Modules/Message/Controllers/message';
+import userController from './Modules/User/Controllers/user';
 
 // type definitions
 import { ServerToClientEvents, ClientToServerEvents, Message, InterServerEvents } from './utils/CommonTypes';
+
+// Server Global State
+import { addUser, getUserBySocketId, removeUser } from "./state";
+import user from './Modules/User/Controllers/user';
 
 // Application Class
 class App {
@@ -59,19 +64,38 @@ class App {
 
   captureSocketConnectionEvent = () => {
     // fired when a new connection is established
-    this.ioSocket.on('connection', (clientSocket: any) => {
+    this.ioSocket.on('connection', (clientSocket: any): void => {
       // sign in event from client
       this.activeClientSocket = clientSocket;
-      this.activeClientSocket.on('signIn', () => {
+      this.activeClientSocket.on('signIn', (userId: string): void => {
         // at this point client is signed in
+        // store the connect client in server global state
+        addUser({ userId, socketId: this.activeClientSocket.id });
+        
         // handle events or messages specific to a client
         this.handleClientEvents();
+        
+        // handle online status change
+        this.handleUserOnlineStatus(userId);
       });
-    });   
+    });
+  }
+
+  handleUserOnlineStatus = async (userId: string): Promise<void> => {
+    try {
+      if (await userController.setOnlineStatus(userId, true)) {
+        this.activeClientSocket.broadcast.emit('isOnline', userId);
+      }
+      
+    } catch (ex: any) {
+      console.log(`Error in App.handleUserOnlineStatus :: ${ex}`)
+    }
   }
 
   handleClientEvents = () => {
     this.activeClientSocket.on('message', this.handleClientMessage);
+    // fired when connection disconnects / lost
+    this.activeClientSocket.on('disconnect', this.handleUserDisconnect)
   }
 
   handleClientMessage = (message: Message) => {
@@ -87,6 +111,14 @@ class App {
     } catch (ex: any) {
       console.log(`Error while storing client message in database`)
     }
+  }
+
+  handleUserDisconnect = async () => {
+    const connectedUser = getUserBySocketId(this.activeClientSocket?.id ?? '');
+    if (connectedUser) {
+      await user.setOnlineStatus(connectedUser.userId, false);
+    }
+    removeUser(this.activeClientSocket.id);
   }
 
   enableCors() {

@@ -23,18 +23,8 @@ import { getMessages } from "../../api/message";
 // Constants
 import { API_RESPONSE_STATUS } from "../../utilities/Constants";
 
-// Types definitions for socket.io
-interface ServerToClientEvents {
-  noArg: () => void;
-  basicEmit: (a: number, b: string, c: Buffer) => void;
-  withAck: (d: string, callback: (e: number) => void) => void;
-  echoMessage: (msg: MessageType) => void;
-}
-
-interface ClientToServerEvents {
-  signIn: () => void;
-  message: (message: MessageType) => void;
-}
+// Types definitions for socket instance
+import { ServerToClientEvents, ClientToServerEvents } from "../types";
 
 // Component definition
 const Home = (): ReactElement => {
@@ -54,11 +44,11 @@ const Home = (): ReactElement => {
   // check if socket is connected
   // send signIn event to server
   const notifyServerOfSignIn = (socket: Socket): void => {
-    socket?.emit('signIn');
+    socket?.emit('signIn', authUserId);
   }
   
   // componentDidMount
-  useEffect((): void => {
+  useEffect(() => {
     // establish connection with server
     const socketInstance: Socket = io(SOCKET_SERVER_ENDPOINT);
     setSocket(socketInstance);
@@ -69,23 +59,16 @@ const Home = (): ReactElement => {
 
   // invoke API to fetch users
   const fetchUsers = async(): Promise<void> => {
-    // mimick API call
-    //await delay(2000);
     const payload = await getUsers();
-    if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status) {
+    if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
       setContacts(payload.data);
       setFilteredContacts(payload.data);
       setSelectedContact(payload.data[0]);
       fetchMessages(payload.data[0]._id);
+    } else if (!payload.data.length) {
+      (document.querySelector("#logout-btn") as HTMLDivElement)?.click();
     }
   }
-
-  // user logout event handler
-  /*const logoutUser = (): void => {
-    logout();
-    socket?.disconnect();
-    navigate('/login');
-  }*/
 
   // send user message to server
   const sendMessage = (msgTxt: string): void => {
@@ -152,11 +135,24 @@ const Home = (): ReactElement => {
   // register server to client events
   const registerSocketServerEvents = (socket: Socket): void => {
     socket?.on('echoMessage', handleEchoedMessage);
+    socket?.on('isOnline', handleUserOnline);
   }
 
   // handles echoed mesage from server
   const handleEchoedMessage = (message: MessageType): void => {
     setMessages(prevMsg => [...prevMsg, message]);
+  }
+
+  // handles user online socket event
+  const handleUserOnline = (userId: string) => {
+    setFilteredContacts((prevState: ContactThreadType[]): ContactThreadType[] => {
+      return prevState.map((contact: ContactThreadType): ContactThreadType => {
+        if (contact._id === userId) {
+          return { ...contact, online: true }
+        };
+        return contact;
+      })
+    });
   }
 
   // JSX Code

@@ -1,18 +1,23 @@
 // Top level imports
-import { ReactElement } from "react";
+import { ComponentPropsWithoutRef, ReactElement } from "react";
 
 //  atoms/molecules/organisms
 import Icon from "../../atoms/Icon";
 
 // props type definition
-interface IProps {
+interface IProps extends ComponentPropsWithoutRef<"div"> {
     onClicked: () => void;
 };
 
 // Component definition
-const LogoutBtn = ({ onClicked }: IProps): ReactElement => {
+const LogoutBtn = ({ onClicked, ...rest }: IProps): ReactElement => {
     return (
-        <div className="cursor-pointer video_cam d-inline-block" title="Logout" onClick={onClicked}>
+        <div
+            className="cursor-pointer video_cam d-inline-block"
+            title="Logout"
+            onClick={onClicked}
+            {...rest}
+        >
             <Icon iconKey="cog" />
         </div>
     )
