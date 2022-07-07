@@ -117,6 +117,7 @@ class App {
     const connectedUser = getUserBySocketId(this.activeClientSocket?.id ?? '');
     if (connectedUser) {
       await user.setOnlineStatus(connectedUser.userId, false);
+      this.activeClientSocket.broadcast.emit('user-disconnected', connectedUser.userId);
     }
     removeUser(this.activeClientSocket.id);
   }

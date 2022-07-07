@@ -11,6 +11,7 @@ export interface ServerToClientEvents {
     withAck: (d: string, callback: (e: number) => void) => void;
     echoMessage: (msg: Message) => void;
     isOnline: (userId: string) => void;
+    'user-disconnected': (userId: string) => void;
 }
 
 export interface ClientToServerEvents {
