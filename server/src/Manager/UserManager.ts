@@ -2,6 +2,11 @@
 import User, {IUserModel} from "../Modules/User/Models/User";
 
 class UserManager {
+    /**
+     * @description - fetches all users except logged in user
+     * @param {string} loggedInUserId - User Id of auth user 
+     * @returns {IUserModel | unknown} - user or null or undefined
+     */
     getUsers = async (loggedInUserId: string): Promise<Partial<IUserModel> | unknown> => {
         let result;
 
@@ -16,6 +21,23 @@ class UserManager {
         } catch (ex) {
             console.log(`Exception in UserManager.getUsers :: ${ex}`);
         }
+        return result;
+    }
+
+    /**
+     * @description - alters user online status in database
+     * @param {string} userId 
+     * @returns {Promise<boolean>}
+     */
+    changeOnlineStatus = async (userId: string, onlineStatus: boolean): Promise<boolean> => {
+        let result = false;
+        try {
+            await User.findByIdAndUpdate(userId, { online: onlineStatus });
+            result = true;
+        } catch (ex: any) {
+            console.log(`Exception in UserManager.changeOnlineStatus :: ${ex}`);
+        }
+
         return result;
     }
 };

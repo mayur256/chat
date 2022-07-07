@@ -32,7 +32,7 @@ const Navbar = (): ReactElement => {
     return (
         <nav className="navbar navbar-light bg-primary">
             <span>Welcome <b>{ authUser.name }!</b></span>
-            <Button size="lg" title="logout" onClick={logout}>
+            <Button id="logout-btn" size="lg" title="logout" onClick={logout}>
                 <Icon iconKey="cog" />
            </Button>
         </nav>

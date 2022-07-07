@@ -1,5 +1,5 @@
 // type defs
-import user from "../Modules/User/Controllers/user";
+// import user from "../Modules/User/Controllers/user";
 import { IConnectedUser } from "../utils/CommonTypes";
 
 const connectedUsers: Array<IConnectedUser> = [];
@@ -24,7 +24,14 @@ export const removeUser = (clientSocketId: string) => {
 // gets All users
 export const getUsers = () => connectedUsers;
 
+// get user by its id
 export const getUserById = (userId: string): IConnectedUser | undefined => {
     const users = getUsers();
-    return users.find((user: IConnectedUser): boolean => user.userId === userId)
+    return users.find((user: IConnectedUser): boolean => user.userId === userId);
+}
+
+// get user by socket id
+export const getUserBySocketId = (socketId: string): IConnectedUser | undefined => {
+    const users = getUsers();
+    return users.find((user: IConnectedUser): boolean => user.socketId === socketId);
 }

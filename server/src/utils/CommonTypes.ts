@@ -10,12 +10,14 @@ export interface ServerToClientEvents {
     basicEmit: (a: number, b: string, c: Buffer) => void;
     withAck: (d: string, callback: (e: number) => void) => void;
     echoMessage: (msg: Message) => void;
+    isOnline: (userId: string) => void;
 }
 
 export interface ClientToServerEvents {
     hello: () => void;
-    signIn: (payload: { userId: string }) => void;
+    signIn: (userId: string) => void;
     message: (message: Message) => void;
+    disconnect: () => void;
 }
 
 export interface InterServerEvents {

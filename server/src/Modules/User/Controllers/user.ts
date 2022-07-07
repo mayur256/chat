@@ -33,6 +33,22 @@ class User {
         
         res.json(resPayload);
     }
+
+    /**
+     * @desc alters online state of user 
+     * @param {string} userId - user id whose online status is to be changed
+     * @returns {boolean} - denoting status of operation
+     */
+    setOnlineStatus = async (userId: string, onlineStatus: boolean): Promise<boolean> => {
+        let operationStatus = true;
+        try {
+            return await userManager.changeOnlineStatus(userId, onlineStatus);
+        } catch (ex: any) {
+            operationStatus = false;
+        }
+
+        return operationStatus;
+    }
 }
 
 export default new User();
