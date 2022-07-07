@@ -1,8 +1,17 @@
 import { ReactElement } from "react";
 
-const MessageTime = (): ReactElement => {
+// Moment
+import moment from 'moment';
+
+// props type definition
+interface IProps {
+  time: number;
+};
+
+// component definition
+const MessageTime = ({time}: IProps): ReactElement => {
   return (
-    <span className="msg_time">8:40 AM, Today</span>
+    <span className="msg_time">{moment(time).format('hh:mm A')}</span>
   )
 }
 

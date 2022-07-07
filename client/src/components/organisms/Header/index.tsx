@@ -9,20 +9,33 @@ import Icon from "../../atoms/Icon";
 import Dropdown from "../../molecules/DropDown";
 import DropdownItem from "../../atoms/DropdownItem";
 
+// types import
+import { ContactThreadType } from "../../types";
+
+// Props type definition
+interface IProps {
+  selectedContact: ContactThreadType;
+}
+
 // Component definition
-const Header = (): ReactElement => {
+const Header = ({
+  selectedContact
+}: IProps): ReactElement => {
+  // Props destructuring to get data
+  const { name, avatar, online } = selectedContact;
+
   return (
     <>
       <div className="card-header msg_head">
         <div className="d-flex bd-highlight">
 
           <Avatar
-            src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg"
-            online
+            src={avatar}
+            online={online}
           />
 
           <UserInfo
-            name="Mayur"
+            name={name}
             count={1789}
           />
 

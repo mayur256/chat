@@ -1,87 +1,138 @@
 // Top Level imports
-import React, { useState, ReactElement } from "react";
+import { ReactElement, useState } from "react";
 
-// import { useNavigate } from "react-router-dom";
+// react - router
+import { Link } from "react-router-dom";
+
+// Formik & Yup
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 // Atoms / Molecules components
 import Input from "../atoms/Input";
+import Button from "../atoms/Button";
+import FormControl from "../molecules/FormControl";
+import Checkbox from "../molecules/Checkbox";
+import ErrorMessage from "../atoms/ErrorMessage";
+import Alert, { AlertTypes } from "../atoms/Alert";
+
+// API service call utilities
+import { login } from "../../api/auth";
 
 // Utilities
-import { login } from "../../utilities/Common";
+import { API_RESPONSE_STATUS } from "../../utilities/Constants";
+import { storeUserInLocalStorage } from "../../utilities/Common";
+import { IAuthUser } from "../types";
+
+// validation schema definition with Yup
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid Email Format')
+    .required('Email is Required!'),
+  
+  password: Yup.string()
+    .required('Password is required!')
+});
 
 // Component Definition
 const Login = (): ReactElement => {
-  // state definition
-  const [formValues, setFormValues] = useState({
-    email: '',
-    password: ''
+  // state definitions
+  const [alert, setAlert] = useState<{type: AlertTypes, message: string}>({
+    type: 'danger',
+    message: ''
   });
 
   // hooks
   // const navigate = useNavigate();
+  // formik configuration
+  const onSubmit = async (values: any): Promise<void> => {
+    // reset alert message
+    setAlert(prevState => ({ ...prevState, message: '' }));
 
-  // Change event handler for form elements
-  const onFormValueChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    setFormValues(previousValues => {
-      return {
-        ...previousValues,
-        [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value
-      }
-    })
+    // invoke API
+    const response = await login(values);
+    if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
+      storeUserInLocalStorage(response.data as IAuthUser);
+      window.location.href = '/';
+    } else {
+      setAlert(prevState => ({ ...prevState, message: response.data as string }));
+    }
   }
-
-  // form submit event handler
-  const submitHandler = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
-    const { email } = formValues;
-    await login(email);
-    window.location.href = '/';
-  }
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit,
+    validationSchema,
+  });
 
   return (
-    <>
-      <form className="login-form" onSubmit={submitHandler}>
-        <legend className="mb-3">Welcome</legend>
-        <div className="mb-4">
-          <label htmlFor="email" className="form-label">
-            Email or Username<span className="text-danger">*</span>
-          </label>
+    <form className="login-form text-dodgerblue needs-validation" onSubmit={formik.handleSubmit}>
+      <h3 className="mb-4 text-center font-weight-bold">Welcome</h3>
+      <legend className="mb-3 text-body">Please sign in to continue</legend>
 
-          <Input
-            id="email"
-            type="email"
-            name="email"
-            value={formValues.email}
-            placeholder="Your email or username"
-            className="form-control"
-            onChange={onFormValueChange}
-          />
-        </div>
+      {alert.message && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+        />
+      )}
 
-        <div className="mb-4">
-          <label htmlFor="password" className="form-label">
-            Password<span className="text-danger">*</span>
-          </label>
+      {/** Username / Email */}
+      <FormControl className="form-floating mb-4">
+        <Input
+          id="email"
+          type="email"
+          name="email"
+          value={formik.values.email}
+          placeholder="Your email or username"
+          className="form-control form-control-lg"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
 
-          <Input
-            id="password"
-            type="password"
-            name="password"
-            value={formValues.password}
-            placeholder="Your password"
-            className="form-control"
-            onChange={onFormValueChange}
-          />
-        </div>
+        {formik.touched.email && (
+          <ErrorMessage text={formik.errors.email ?? ''} className="text-danger" />
+        )}
+      </FormControl>
+      
 
-        <button
-          className="btn btn-primary btn-block"
-          type="submit"
-        >
-          Sign In
-        </button>
-      </form>
-    </>
+      {/** Password field */}
+      <FormControl className="form-floating mb-4">
+        <Input
+          id="password"
+          type="password"
+          name="password"
+          value={formik.values.password}
+          placeholder="Your password"
+          className="form-control form-control-lg"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+
+        {formik.touched.password && (
+          <ErrorMessage text={formik.errors.password ?? ''} className="text-danger text-break" />
+        )}
+      </FormControl>
+
+      {/** Remember me */}
+      <Checkbox />
+
+      {/** Submit */}
+      <Button
+        type="submit"
+        block
+        size="lg"
+      >
+        Sign In
+      </Button>
+
+      <div className="mt-4 mb-4 text-dark text-center">
+        <h5>Not a member ? &nbsp;
+          <Link to="/register">Register</Link></h5>
+      </div>
+    </form>
   )
 }
 
