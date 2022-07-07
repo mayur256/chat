@@ -35,7 +35,7 @@ const Home = (): ReactElement => {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [contacts, setContacts] = useState<ContactThreadType[]>([]);
   const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[]>([]);
-  const [selectedContact, setSelectedContact] = useState<ContactThreadType>();
+  const [selectedContact, setSelectedContact] = useState<ContactThreadType | null>(null);
 
   // hooks
   // const navigate = useNavigate();
@@ -61,10 +61,12 @@ const Home = (): ReactElement => {
   const fetchUsers = async(): Promise<void> => {
     const payload = await getUsers();
     if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
-      setContacts(payload.data);
-      setFilteredContacts(payload.data);
-      setSelectedContact(payload.data[0]);
-      fetchMessages(payload.data[0]._id);
+      const users: ContactThreadType[] = payload.data.map((user, idx) => idx === 0 ? { ...user, isSelected: true } : user);
+      
+      setContacts(users);
+      setFilteredContacts(users);
+      setSelectedContact(users[0]);
+      fetchMessages(users[0]._id);
     } else if (!payload.data.length) {
       (document.querySelector("#logout-btn") as HTMLDivElement)?.click();
     }
@@ -136,6 +138,7 @@ const Home = (): ReactElement => {
   const registerSocketServerEvents = (socket: Socket): void => {
     socket?.on('echoMessage', handleEchoedMessage);
     socket?.on('isOnline', handleUserOnline);
+    socket?.on('user-disconnected', handleUserDisconnected);
   }
 
   // handles echoed mesage from server
@@ -145,10 +148,22 @@ const Home = (): ReactElement => {
 
   // handles user online socket event
   const handleUserOnline = (userId: string) => {
+    changeContactOnlineStatus(userId, true);
+  }
+
+  // handles user-disconnected socket event
+  const handleUserDisconnected = (userId: string) => {
+    changeContactOnlineStatus(userId, false);
+  }
+
+  // changes contacts online status
+  const changeContactOnlineStatus = (userId: string, onlineStatus: boolean): void => {
     setFilteredContacts((prevState: ContactThreadType[]): ContactThreadType[] => {
       return prevState.map((contact: ContactThreadType): ContactThreadType => {
         if (contact._id === userId) {
-          return { ...contact, online: true }
+          const tContact = { ...contact, online: onlineStatus };
+          setSelectedContact(tContact);
+          return tContact
         };
         return contact;
       })
