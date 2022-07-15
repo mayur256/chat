@@ -12,6 +12,7 @@ export interface ServerToClientEvents {
     echoMessage: (msg: Message) => void;
     isOnline: (userId: string) => void;
     'user-disconnected': (userId: string) => void;
+    typing: (userId: string) => void;
 }
 
 export interface ClientToServerEvents {
@@ -19,6 +20,7 @@ export interface ClientToServerEvents {
     signIn: (userId: string) => void;
     message: (message: Message) => void;
     disconnect: () => void;
+    isTyping: (userId: string) => void;
 }
 
 export interface InterServerEvents {

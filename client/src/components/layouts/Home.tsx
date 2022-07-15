@@ -187,6 +187,7 @@ const Home = (): ReactElement => {
           selectedContact={selectedContact}
           sendMessage={sendMessage}
           messages={messages}
+          socket={socket}
         />
       )}
     </>

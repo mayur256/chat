@@ -1,16 +1,33 @@
 // Top level imports
 import React, { ReactElement, useState } from "react";
+
+// react-redux
+import { useSelector } from "react-redux";
+
+// Socket IO
+import { Socket } from "socket.io-client";
+
+// Atoms / Molecules / Organisms
 import Icon from "../../atoms/Icon";
 import TextArea from "../../atoms/TextArea";
+
+// types
+import { ClientToServerEvents, ServerToClientEvents } from "../../types";
+import { RootState } from "../../../store/types";
 
 // props type definitions
 interface IProps {
   sendMessage: (message: string) => void;
+  socket?: Socket<ServerToClientEvents, ClientToServerEvents>
 };
 
 // Component definition
-const Footer = ({ sendMessage }: IProps): ReactElement => {
+const Footer = ({ sendMessage, socket }: IProps): ReactElement => {
+  // state declarations
   const [msgValue, setMsgValue] = useState('');
+
+  // hooks
+  const authUserId = useSelector((state: RootState): string => state.user._id);
 
   // send button clicked event handler
   const sendMsgClicked = (): void => {
@@ -37,6 +54,9 @@ const Footer = ({ sendMessage }: IProps): ReactElement => {
       }
       return;
     }
+
+    // emit typing event
+    socket?.emit('isTyping', authUserId);
   }
 
   // handles key up events on textarea
@@ -57,7 +77,6 @@ const Footer = ({ sendMessage }: IProps): ReactElement => {
               <Icon iconKey="paperclip" />
             </span>
           </div>
-
           <TextArea
             value={msgValue}
             required

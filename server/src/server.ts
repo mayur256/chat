@@ -93,9 +93,12 @@ class App {
   }
 
   handleClientEvents = () => {
+    // fired when a user send a message
     this.activeClientSocket.on('message', this.handleClientMessage);
+    // fired when a user is typing
+    this.activeClientSocket.on('isTyping', this.handleTyping);
     // fired when connection disconnects / lost
-    this.activeClientSocket.on('disconnect', this.handleUserDisconnect)
+    this.activeClientSocket.on('disconnect', this.handleUserDisconnect);
   }
 
   handleClientMessage = (message: Message) => {
@@ -120,6 +123,10 @@ class App {
       this.activeClientSocket.broadcast.emit('user-disconnected', connectedUser.userId);
     }
     removeUser(this.activeClientSocket.id);
+  }
+
+  handleTyping = (userId: string) => {
+    this.activeClientSocket.broadcast.emit('typing', userId);
   }
 
   enableCors() {
