@@ -39,7 +39,7 @@ export interface ServerToClientEvents {
     echoMessage: (msg: MessageType) => void;
     isOnline: (userId: string) => void;
     'user-disconnected': (userId: string) => void;
-    typing: (userId: string) => void;
+    typingEchoed: (userId: string) => void;
 }
 
 export interface ClientToServerEvents {

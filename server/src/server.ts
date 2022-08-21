@@ -126,7 +126,7 @@ class App {
   }
 
   handleTyping = (userId: string) => {
-    this.activeClientSocket.broadcast.emit('typing', userId);
+    this.getSocketServer().emit('typingEchoed', userId);
   }
 
   enableCors() {
