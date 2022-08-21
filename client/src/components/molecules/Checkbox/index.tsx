@@ -6,10 +6,18 @@ import FormControl from "../FormControl";
 import Input from "../../atoms/Input";
 import Label from "../../atoms/Label";
 
+// Props type definitions
+interface IProps {
+    dataTestId: string
+}
+
 // Component definition
-const Checkbox = (): ReactElement => {
+const Checkbox = ({ dataTestId }: IProps): ReactElement => {
     return (
-        <FormControl className="form-group form-check mb-4 form-control-lg">
+        <FormControl
+            className="form-group form-check mb-4 form-control-lg"
+            data-testid={dataTestId}
+        >
             <Input
                 type="checkbox"
                 className="form-check-input checkbox-lg"
