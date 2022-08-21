@@ -29,6 +29,7 @@ body,html{
   white-space: nowrap;
 }
 .msg_card_body{
+  position: relative;
   overflow-y: auto;
 }
 .card-header{
@@ -94,7 +95,6 @@ body,html{
   height: 70px;
   width: 70px;
   border:1.5px solid #f5f6fa;
-
 }
 .user_img_msg{
   height: 40px;
@@ -242,4 +242,11 @@ body,html{
 
 .text-dodgerblue{
   color: dodgerblue;
+}
+
+.typing-status {
+  position: absolute;
+  bottom: 0;
+  color: #fff;
+  padding: 0 12px;
 }

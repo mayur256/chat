@@ -9,20 +9,20 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 // Atoms / Molecules components
-import Input from "../atoms/Input";
-import Button from "../atoms/Button";
-import FormControl from "../molecules/FormControl";
-import Checkbox from "../molecules/Checkbox";
-import ErrorMessage from "../atoms/ErrorMessage";
-import Alert, { AlertTypes } from "../atoms/Alert";
+import Input from "../../atoms/Input";
+import Button from "../../atoms/Button";
+import FormControl from "../../molecules/FormControl";
+import Checkbox from "../../molecules/Checkbox";
+import ErrorMessage from "../../atoms/ErrorMessage";
+import Alert, { AlertTypes } from "../../atoms/Alert";
 
 // API service call utilities
-import { login } from "../../api/auth";
+import { login } from "../../../api/auth";
 
 // Utilities
-import { API_RESPONSE_STATUS } from "../../utilities/Constants";
-import { storeUserInLocalStorage } from "../../utilities/Common";
-import { IAuthUser } from "../types";
+import { API_RESPONSE_STATUS } from "../../../utilities/Constants";
+import { storeUserInLocalStorage } from "../../../utilities/Common";
+import { IAuthUser } from "../../types";
 
 // validation schema definition with Yup
 const validationSchema = Yup.object().shape({
@@ -68,7 +68,11 @@ const Login = (): ReactElement => {
   });
 
   return (
-    <form className="login-form text-dodgerblue needs-validation" onSubmit={formik.handleSubmit}>
+    <form
+      className="login-form text-dodgerblue needs-validation"
+      onSubmit={formik.handleSubmit}
+      data-testid="login-form"
+    >
       <h3 className="mb-4 text-center font-weight-bold">Welcome</h3>
       <legend className="mb-3 text-body">Please sign in to continue</legend>
 
@@ -80,7 +84,10 @@ const Login = (): ReactElement => {
       )}
 
       {/** Username / Email */}
-      <FormControl className="form-floating mb-4">
+      <FormControl
+        className="form-floating mb-4"
+        data-testid="email"
+      >
         <Input
           id="email"
           type="email"
@@ -99,7 +106,10 @@ const Login = (): ReactElement => {
       
 
       {/** Password field */}
-      <FormControl className="form-floating mb-4">
+      <FormControl
+        className="form-floating mb-4"
+        data-testid="password"
+      >
         <Input
           id="password"
           type="password"
@@ -117,13 +127,16 @@ const Login = (): ReactElement => {
       </FormControl>
 
       {/** Remember me */}
-      <Checkbox />
+      <Checkbox
+        dataTestId="remember-me"
+      />
 
       {/** Submit */}
       <Button
         type="submit"
         block
         size="lg"
+        data-testid="submit-btn"
       >
         Sign In
       </Button>
