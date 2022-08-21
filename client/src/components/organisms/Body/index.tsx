@@ -32,7 +32,7 @@ const Body = ({ messages, socket, selectedContact }: IProps): ReactElement => {
 
   // register server to client events
   const registerSocketServerEvents = (socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined): void => {
-    socket?.on('typing', (userId: string) => {
+    socket?.on('typingEchoed', (userId: string) => {
       if (userId === selectedContact._id) {
         setIsTyping(true);
         setTimeout(() => setIsTyping(false), 1000);
