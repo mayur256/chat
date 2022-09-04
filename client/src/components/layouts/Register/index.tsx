@@ -9,15 +9,15 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 // Atoms / Molecules components
-import Input from "../atoms/Input";
-import Button from "../atoms/Button";
-import FormControl from "../molecules/FormControl";
-import ErrorMessage from "../atoms/ErrorMessage";
-import Alert, { AlertTypes } from "../atoms/Alert";
+import Input from "../../atoms/Input";
+import Button from "../../atoms/Button";
+import FormControl from "../../molecules/FormControl";
+import ErrorMessage from "../../atoms/ErrorMessage";
+import Alert, { AlertTypes } from "../../atoms/Alert";
 
 // API services
-import { register } from "../../api/auth";
-import { API_RESPONSE_STATUS } from "../../utilities/Constants";
+import { register } from "../../../api/auth";
+import { API_RESPONSE_STATUS } from "../../../utilities/Constants";
 
 // validation schema definition with Yup
 const validationSchema = Yup.object().shape({
@@ -25,12 +25,12 @@ const validationSchema = Yup.object().shape({
         .min(2, 'Too Short!')
         .max(50, 'Too Long!')
         .required('First Name is Required!'),
-    
+
     lastName: Yup.string()
         .min(2, 'Too Short!')
         .max(50, 'Too Long!')
         .required('Last Name is Required!'),
-    
+
     email: Yup.string()
         .email('Invalid Email Format!')
         .required('Email is Required!'),
@@ -41,7 +41,7 @@ const validationSchema = Yup.object().shape({
             /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
             "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character"
         ),
-    
+
     confirmPassword: Yup.string()
         .required('Confirm Password is Required!')
         .oneOf([Yup.ref('password')], 'Passwords do not match!')
@@ -87,7 +87,11 @@ const Register = (): ReactElement => {
     });
 
     return (
-        <form className="signup-form" onSubmit={formik.handleSubmit}>
+        <form
+            className="signup-form"
+            onSubmit={formik.handleSubmit}
+            data-testid="register-form"
+        >
             <legend className="mb-4 text-center">Please register to begin using this application</legend>
 
             {alert.message && (
@@ -100,7 +104,10 @@ const Register = (): ReactElement => {
             {/** Name Section */}
             <div className="row">
                 <div className="col-xs-12 col-md-6">
-                    <FormControl className="form-floating mb-4">
+                    <FormControl
+                        className="form-floating mb-4"
+                        data-testid="first-name"
+                    >
                         <Input
                             id="first-name"
                             name="firstName"
@@ -116,9 +123,12 @@ const Register = (): ReactElement => {
                         )}
                     </FormControl>
                 </div>
-                
+
                 <div>
-                    <FormControl className="form-floating mb-4">
+                    <FormControl
+                        className="form-floating mb-4"
+                        data-testid="last-name"
+                    >
                         <Input
                             id="last-name"
                             name="lastName"
@@ -137,7 +147,7 @@ const Register = (): ReactElement => {
             </div>
 
             {/** Username / Email */}
-            <FormControl className="form-floating mb-4">
+            <FormControl className="form-floating mb-4" data-testid="email">
                 <Input
                     id="email"
                     type="email"
@@ -155,7 +165,7 @@ const Register = (): ReactElement => {
             </FormControl>
 
             {/** Password field */}
-            <FormControl className="form-floating mb-4">
+            <FormControl className="form-floating mb-4" data-testid="password">
                 <Input
                     id="password"
                     type="password"
@@ -173,7 +183,7 @@ const Register = (): ReactElement => {
             </FormControl>
 
             {/** Confirm Password field */}
-            <FormControl className="form-floating mb-4">
+            <FormControl className="form-floating mb-4" data-testid="confirm-password">
                 <Input
                     id="confirm-password"
                     type="password"
@@ -195,13 +205,14 @@ const Register = (): ReactElement => {
                 type="submit"
                 block
                 size="lg"
+                data-testid="register-submit"
             >
                 Register
             </Button>
 
             <div className="mt-4 mb-4 text-dark text-center">
                 <h5>Already registered ?
-                Go to <Link to="/login">Sign In</Link></h5>
+                    Go to <Link to="/login" data-testid="sign-in-link">Sign In</Link></h5>
             </div>
         </form>
     );

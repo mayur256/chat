@@ -36,7 +36,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
     } else {
         res.json({
             status: 401,
-            error: 'Authenticatin token is missing'
+            error: 'Authentication token is missing'
         });
     }
 }
