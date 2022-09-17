@@ -58,6 +58,7 @@ const Login = (): ReactElement => {
       setAlert(prevState => ({ ...prevState, message: response.data as string }));
     }
   }
+  
   const formik = useFormik({
     initialValues: {
       email: '',
