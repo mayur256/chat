@@ -2,7 +2,7 @@
 import { MemoryRouter } from "react-router-dom";
 
 // React Testing utils
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 
 // Subject Component
 import Login from "./index";
@@ -36,7 +36,7 @@ describe('Login Page', (): void => {
 
     });
 
-    // Test case - 2
+    // Test Case - 2
     test('Error is displayed for required fields', async (): Promise<void> => {
         // Arrange
         // render the component in jest environment
@@ -93,5 +93,33 @@ describe('Login Page', (): void => {
             expect(emailErrorEl.innerHTML).toBe(invalidEmailErrMsg);
         });
         
+    });
+
+    // Test Case 4
+    test('API returns with expected response', async (): Promise<void> => {
+        // Arrange
+        // render the component in jest environment
+        render(
+            <MemoryRouter>
+                <Login />
+            </MemoryRouter>
+        );
+        const email = 'a@b.com';
+        const password = '12345678';
+
+         // Query elements
+        const emailEl = screen.getByTestId('email') as HTMLInputElement;
+        const passwordEl = screen.getByTestId('password') as HTMLInputElement;
+        const submitBtn = screen.getByTestId('submit-btn');
+        
+        // Fire events and verify state updates
+        fireEvent.change(emailEl, { target: { value: email } });
+        await waitFor((): void => expect(emailEl.value).toBe(email));
+        fireEvent.change(passwordEl, { target: { value: password } });
+        await waitFor((): void => expect(passwordEl.value).toBe(password));
+
+        // Submit
+        fireEvent.click(submitBtn);
+        await waitFor(() => expect(submitBtn).not.toBeInTheDocument());
     });
 });
