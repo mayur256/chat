@@ -86,9 +86,9 @@ const Login = (): ReactElement => {
       {/** Username / Email */}
       <FormControl
         className="form-floating mb-4"
-        data-testid="email"
       >
         <Input
+          data-testid="email"
           id="email"
           type="email"
           name="email"
@@ -100,7 +100,11 @@ const Login = (): ReactElement => {
         />
 
         {formik.touched.email && (
-          <ErrorMessage text={formik.errors.email ?? ''} className="text-danger" />
+          <ErrorMessage
+            data-testid="email-error"
+            text={formik.errors.email ?? ''}
+            className="text-danger"
+          />
         )}
       </FormControl>
       
@@ -108,9 +112,9 @@ const Login = (): ReactElement => {
       {/** Password field */}
       <FormControl
         className="form-floating mb-4"
-        data-testid="password"
       >
         <Input
+          data-testid="password"
           id="password"
           type="password"
           name="password"
@@ -122,7 +126,11 @@ const Login = (): ReactElement => {
         />
 
         {formik.touched.password && (
-          <ErrorMessage text={formik.errors.password ?? ''} className="text-danger text-break" />
+          <ErrorMessage
+            text={formik.errors.password ?? ''}
+            className="text-danger text-break"
+            data-testid="password-error"
+          />
         )}
       </FormControl>
 
