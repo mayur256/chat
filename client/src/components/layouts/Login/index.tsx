@@ -42,15 +42,14 @@ const Login = (): ReactElement => {
     message: ''
   });
 
-  // hooks
-  // const navigate = useNavigate();
   // formik configuration
   const onSubmit = async (values: any): Promise<void> => {
     // reset alert message
     setAlert(prevState => ({ ...prevState, message: '' }));
-
+    
     // invoke API
     const response = await login(values);
+
     if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
       storeUserInLocalStorage(response.data as IAuthUser);
       window.location.href = '/';
@@ -58,6 +57,7 @@ const Login = (): ReactElement => {
       setAlert(prevState => ({ ...prevState, message: response.data as string }));
     }
   }
+  
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -78,6 +78,7 @@ const Login = (): ReactElement => {
 
       {alert.message && (
         <Alert
+          data-testid="response-error"
           message={alert.message}
           type={alert.type}
         />
@@ -86,9 +87,9 @@ const Login = (): ReactElement => {
       {/** Username / Email */}
       <FormControl
         className="form-floating mb-4"
-        data-testid="email"
       >
         <Input
+          data-testid="email"
           id="email"
           type="email"
           name="email"
@@ -100,7 +101,11 @@ const Login = (): ReactElement => {
         />
 
         {formik.touched.email && (
-          <ErrorMessage text={formik.errors.email ?? ''} className="text-danger" />
+          <ErrorMessage
+            data-testid="email-error"
+            text={formik.errors.email ?? ''}
+            className="text-danger"
+          />
         )}
       </FormControl>
       
@@ -108,9 +113,9 @@ const Login = (): ReactElement => {
       {/** Password field */}
       <FormControl
         className="form-floating mb-4"
-        data-testid="password"
       >
         <Input
+          data-testid="password"
           id="password"
           type="password"
           name="password"
@@ -122,7 +127,11 @@ const Login = (): ReactElement => {
         />
 
         {formik.touched.password && (
-          <ErrorMessage text={formik.errors.password ?? ''} className="text-danger text-break" />
+          <ErrorMessage
+            text={formik.errors.password ?? ''}
+            className="text-danger text-break"
+            data-testid="password-error"
+          />
         )}
       </FormControl>
 

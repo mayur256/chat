@@ -20,7 +20,8 @@ const Input = ({
   value = '',
   onChange,
   placeholder =  '',
-  className = ''
+  className = '',
+  ...rest
 }: Partial<InputProps>) => {
 
   // JSX Code
@@ -34,6 +35,7 @@ const Input = ({
         placeholder={placeholder}
         onChange={onChange}
         className={className}
+        {...rest}
       />
     </>
   )
