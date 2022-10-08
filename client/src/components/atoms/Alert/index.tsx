@@ -1,9 +1,9 @@
 // Top level imports
-import { ReactElement } from "react";
+import { ComponentPropsWithoutRef, ReactElement } from "react";
 
 export type AlertTypes = 'danger' | 'success' | 'primary' | 'secondary' | 'info';
 // Props type definition
-interface IProps {
+interface IProps extends ComponentPropsWithoutRef<"div"> {
     message: string;
     type?: AlertTypes,
 };
@@ -12,9 +12,10 @@ interface IProps {
 const Alert = ({
     message,
     type = 'success',
+    ...rest
 }: IProps): ReactElement => {
     return (
-        <div className={`alert alert-${type}`} role="alert">
+        <div className={`alert alert-${type}`} role="alert" {...rest}>
             {message}
         </div>
     );
