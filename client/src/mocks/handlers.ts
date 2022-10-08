@@ -1,6 +1,5 @@
 // src/mocks/handlers.js
 import { rest, RequestHandler, } from 'msw';
-import { number } from 'yup';
 
 interface LoginBody {
     email: string;
