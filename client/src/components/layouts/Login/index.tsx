@@ -42,15 +42,14 @@ const Login = (): ReactElement => {
     message: ''
   });
 
-  // hooks
-  // const navigate = useNavigate();
   // formik configuration
   const onSubmit = async (values: any): Promise<void> => {
     // reset alert message
     setAlert(prevState => ({ ...prevState, message: '' }));
-
+    
     // invoke API
     const response = await login(values);
+
     if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
       storeUserInLocalStorage(response.data as IAuthUser);
       window.location.href = '/';
@@ -79,6 +78,7 @@ const Login = (): ReactElement => {
 
       {alert.message && (
         <Alert
+          data-testid="response-error"
           message={alert.message}
           type={alert.type}
         />
