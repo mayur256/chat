@@ -1,5 +1,5 @@
 // Top level imports
-import { ReactElement } from "react";
+import { ReactElement, useRef, useEffect } from "react";
 
 // Socket IO
 import { Socket } from "socket.io-client";
@@ -10,7 +10,13 @@ import Body from "../organisms/Body"
 import Footer from "../organisms/Footer"
 
 // types
-import { MessageType, ContactThreadType, ClientToServerEvents, ServerToClientEvents } from '../types';
+import {
+  MessageType,
+  ContactThreadType,
+  ClientToServerEvents,
+  ServerToClientEvents,
+  TDivRef
+} from '../types';
 
 // props type definitions
 interface IProps {
@@ -27,6 +33,33 @@ const MessageArea = ({
   messages,
   socket
 }: IProps): ReactElement => {
+  // reference to the message body container
+  const msgBodyRef = useRef<TDivRef>(null);
+
+  // componentDidMount , componentDidUpdate
+  useEffect((): void => {
+    scrollMsgBodyToBottom();
+  }, [messages]);
+  
+  // runs the callback on clicking send message button
+  const onSendMessage = (msgVal: string): void => {    
+    scrollMsgBodyToBottom();
+
+    // a message is sent
+    sendMessage(msgVal);
+  }
+
+  const scrollMsgBodyToBottom = () => {
+    // scroll the container element to the bottom to display latest message
+    if (msgBodyRef.current) {
+      const msgBodyContainer: TDivRef = msgBodyRef.current;
+      msgBodyContainer.scrollTo({
+        top: +msgBodyContainer.clientHeight,
+        behavior: 'smooth'
+      });
+    }
+  }
+  // Main JSX
   return (
     <div className="col-md-8 col-xl-6 col-sm-7 chat">
       <div className="card">
@@ -41,11 +74,12 @@ const MessageArea = ({
           selectedContact={selectedContact}
           messages={messages}
           socket={socket}
+          ref={msgBodyRef}
         />
 
         {/** Message Footer */}
         <Footer
-          sendMessage={sendMessage}
+          sendMessage={onSendMessage}
           socket={socket}
         />
 
