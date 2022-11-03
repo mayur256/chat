@@ -8,11 +8,9 @@ type CProps = {
 // Component definition
 const DropdownItem = ({ children }: CProps): ReactElement => {
   return (
-    <>
-      <li>
-        { children }
-      </li>
-    </>
+    <li>
+      {children}
+    </li>
   )
 }
 
