@@ -23,25 +23,23 @@ const ContactThread = ({
   onClicked
 }: Props): ReactElement => {
   return (
-    <>
-      <li className={`cursor-pointer ${isSelected ? 'active': ''}`} onClick={onClicked}>
-        <div className="d-flex bd-highlight">
-          {/** Contact Avatar */}
-          <Avatar
-            src={avatarSrc}
-            online={online}
-            alt={name}
-          />
+    <li className={`cursor-pointer ${isSelected ? 'active' : ''}`} onClick={onClicked}>
+      <div className="d-flex bd-highlight">
+        {/** Contact Avatar */}
+        <Avatar
+          src={avatarSrc}
+          online={online}
+          alt={name}
+        />
 
-          {/** User Name and Status */}
-          <UserStatus
-            name={name}
-            status={online ? 'online' : 'offline'}
-          />
+        {/** User Name and Status */}
+        <UserStatus
+          name={name}
+          status={online ? 'online' : 'offline'}
+        />
 
-        </div>
-      </li>
-    </>
+      </div>
+    </li>
   )
 }
 

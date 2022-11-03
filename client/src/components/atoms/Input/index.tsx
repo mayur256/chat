@@ -26,18 +26,16 @@ const Input = ({
 
   // JSX Code
   return (
-    <>
-      <input
-        id={id}
-        type={type}
-        name={name}
-        value={value}
-        placeholder={placeholder}
-        onChange={onChange}
-        className={className}
-        {...rest}
-      />
-    </>
+    <input
+      id={id}
+      type={type}
+      name={name}
+      value={value}
+      placeholder={placeholder}
+      onChange={onChange}
+      className={className}
+      {...rest}
+    />
   )
 }
 

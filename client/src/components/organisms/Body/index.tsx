@@ -1,5 +1,12 @@
 //top level imports
-import { ReactElement, useEffect, useState } from "react";
+import {
+  ReactElement,
+  useEffect,
+  useState,
+  forwardRef,
+  ComponentPropsWithRef,
+  ForwardedRef
+} from "react";
 
 // Socket IO
 import { Socket } from "socket.io-client";
@@ -10,17 +17,29 @@ import MessageContainer from "../../molecules/MessageContainer";
 import Message from "../../molecules/Message";
 
 // types
-import { MessageType, ServerToClientEvents, ClientToServerEvents, ContactThreadType } from "../../types";
+import {
+  MessageType,
+  ServerToClientEvents,
+  ClientToServerEvents,
+  ContactThreadType,
+  TDivRef
+} from "../../types";
 
 // props type definition
-interface IProps {
+interface IProps extends ComponentPropsWithRef<"div"> {
   selectedContact: ContactThreadType;
   messages: MessageType[];
   socket?: Socket<ServerToClientEvents, ClientToServerEvents>
 }
 
 // Component definition
-const Body = ({ messages, socket, selectedContact }: IProps): ReactElement => {
+const Body = forwardRef<TDivRef, IProps>(({
+  messages,
+  socket,
+  selectedContact
+}: IProps,
+  ref: ForwardedRef<TDivRef | null>
+): ReactElement => {
   // state declarations
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
@@ -28,8 +47,8 @@ const Body = ({ messages, socket, selectedContact }: IProps): ReactElement => {
   useEffect(() => {
     registerSocketServerEvents(socket);
   }, []);
-  
 
+  
   // register server to client events
   const registerSocketServerEvents = (socket: Socket<ServerToClientEvents, ClientToServerEvents> | undefined): void => {
     socket?.on('typingEchoed', (userId: string) => {
@@ -39,9 +58,9 @@ const Body = ({ messages, socket, selectedContact }: IProps): ReactElement => {
       }
     });
   }
-
+  
   return (
-    <div className="card-body msg_card_body">
+    <div className="card-body msg_card_body" ref={ref}>
       {Boolean(messages.length) && messages.map((message: MessageType): ReactElement => (
         <MessageContainer message={message} key={message._id}>
           <Avatar
@@ -50,12 +69,12 @@ const Body = ({ messages, socket, selectedContact }: IProps): ReactElement => {
           />
 
           <Message message={message} />
-        </MessageContainer>  
+        </MessageContainer>
       ))}
 
       {isTyping && <div className="typing-status">{selectedContact.name} is typing...</div>}
     </div>
   )
-}
+});
 
 export default Body;

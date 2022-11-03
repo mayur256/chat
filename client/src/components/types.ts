@@ -48,3 +48,5 @@ export interface ClientToServerEvents {
     disconnect: () => void;
     isTyping: (userId: string) => void;
 }
+
+export type TDivRef = HTMLDivElement;

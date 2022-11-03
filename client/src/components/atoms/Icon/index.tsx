@@ -9,11 +9,9 @@ interface IProps {
 //Component definitions
 const Icon = ({iconKey}: IProps): ReactElement => {
   return (
-    <>
-      <span>
-        <i className={`fas fa-${iconKey}`}></i>
-      </span>
-    </>
+    <span>
+      <i className={`fas fa-${iconKey}`}></i>
+    </span>
   )
 }
 
