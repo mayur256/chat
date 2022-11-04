@@ -61,7 +61,7 @@ const MessageArea = ({
   }
   // Main JSX
   return (
-    <div className="col-md-8 col-xl-6 col-sm-7 chat">
+    <div className="col-md-8 col-xl-6 col-sm-7">
       <div className="card">
         
         {/** Message Header */}

@@ -12,6 +12,7 @@ import { io, Socket } from "socket.io-client";
 import Navbar from "../organisms/Navbar";
 import ContactsList from "./ContactsList";
 import MessageArea from "./MessageArea";
+import Alert from "../atoms/Alert";
 
 // types
 import { ContactThreadType, MessageType } from '../types';
@@ -173,14 +174,21 @@ const Home = (): ReactElement => {
   // JSX Code
   return (
     <>
-      <Navbar/>
+      <Navbar />
+
+      <div className="col-md-12 messages-alert-container">
+        <Alert
+          message="Chat message are not persisted in production!"
+          type="danger"
+        />
+      </div>
       
       <ContactsList
         contacts={filteredContacts}
         contactSelected={onContactSelected}
         initiateSearch={onSearchInitiated}
       />
-      
+
       {/** Chat Message Area */}
       {selectedContact && (
         <MessageArea
