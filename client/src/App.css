@@ -16,7 +16,7 @@ body,html{
 }
 
 .chat{
-  margin: 10vh 0;
+  margin: 10vh 0 0 0;
 }
 .card{
   height: 80vh;
@@ -249,4 +249,11 @@ body,html{
   bottom: 0;
   color: #fff;
   padding: 0 12px;
+}
+
+.messages-alert-container {
+  margin-top: 10vh;
+  text-align: center;
+  display: flex;
+  justify-content: center;
 }
