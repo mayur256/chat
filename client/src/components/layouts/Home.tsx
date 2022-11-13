@@ -22,7 +22,7 @@ import { getUsers } from "../../api/user";
 import { getMessages } from "../../api/message";
 
 // Constants
-import { API_RESPONSE_STATUS } from "../../utilities/Constants";
+import { API_RESPONSE_STATUS, NODE_ENV } from "../../utilities/Constants";
 
 // Types definitions for socket instance
 import { ServerToClientEvents, ClientToServerEvents } from "../types";
@@ -177,10 +177,13 @@ const Home = (): ReactElement => {
       <Navbar />
 
       <div className="col-md-12 messages-alert-container">
-        <Alert
-          message="Chat message are not persisted in production!"
-          type="danger"
-        />
+        {NODE_ENV !== 'development' && (
+          <Alert
+            message="Chat messages are not persisted in production!"
+            type="danger"
+            dismissable
+          />
+        )}
       </div>
       
       <ContactsList

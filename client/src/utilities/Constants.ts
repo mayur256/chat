@@ -4,3 +4,5 @@ export const API_RESPONSE_STATUS = {
     CLIENT_ERROR: 400,
     SERVER_ERROR: 500
 }
+
+export const NODE_ENV = process.env.NODE_ENV;
