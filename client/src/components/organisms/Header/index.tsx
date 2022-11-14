@@ -15,11 +15,13 @@ import { ContactThreadType } from "../../types";
 // Props type definition
 interface IProps {
   selectedContact: ContactThreadType;
+  messagesLength: number;
 }
 
 // Component definition
 const Header = ({
-  selectedContact
+  selectedContact,
+  messagesLength
 }: IProps): ReactElement => {
   // Props destructuring to get data
   const { name, avatar, online } = selectedContact;
@@ -36,7 +38,7 @@ const Header = ({
 
           <UserInfo
             name={name}
-            count={1789}
+            count={messagesLength}
           />
 
           <CallIcons>
