@@ -67,6 +67,7 @@ const MessageArea = ({
         {/** Message Header */}
         <Header
           selectedContact={selectedContact}
+          messagesLength={messages.length}
         />
 
         {/** Message Body */}
