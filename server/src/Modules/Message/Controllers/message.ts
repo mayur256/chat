@@ -49,28 +49,34 @@ class Message {
      * @description stores a message on 'message' event of socket
      */
     storeMessage = async (msgPayload: IMessage): Promise<void> => {
+        const isDevEnv = process.env.NODE_ENV === "development";
         try {
-            const createdMsg: IMessageModel = await messageManager.storeMessage(msgPayload);
-            const {
-                _id,
-                from,
-                to,
-                payload,
-                sent_at,
-                type,
-                received_at
-            } = createdMsg;
+
+            const echoedMsg: Partial<IMessageModel> = {
+                _id: Math.random() * 100000000,
+                from: msgPayload.from,
+                to: msgPayload.to,
+                type: msgPayload.type,
+                payload: msgPayload.payload,
+                sent_at: msgPayload.sent_at,
+                received_at: new Date()
+            };
+
+            if (isDevEnv) {
+                const createdMsg: IMessageModel = await messageManager.storeMessage(msgPayload);
+
+                // re-populate the echoed object with properties of newly created message document
+                echoedMsg._id = createdMsg._id;
+                echoedMsg.from = createdMsg.from;
+                echoedMsg.to = createdMsg.to;
+                echoedMsg.payload = createdMsg.payload;
+                echoedMsg.sent_at = createdMsg.sent_at;
+                echoedMsg.received_at = createdMsg.received_at;   
+            }
             
             // echo the created message back to clients
-            serverSocket.emit('echoMessage', {
-                _id,
-                from,
-                to,
-                payload,
-                sent_at,
-                type,
-                received_at
-            });
+            serverSocket.emit('echoMessage', echoedMsg);
+
         } catch (ex) {
             console.log(`Error in Message Controller :: ${ex}`);
         }

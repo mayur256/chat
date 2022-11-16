@@ -34,6 +34,7 @@ const Footer = ({ sendMessage, socket }: IProps): ReactElement => {
     const msgVal = msgValue.trim();
     if (!msgVal) return;
     sendMessage(msgVal);
+    setMsgValue('');
   }
 
   // handles textarea content change
