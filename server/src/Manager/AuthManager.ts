@@ -1,23 +1,20 @@
 // NPM modules
 import * as bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
 import gravatar from "gravatar";
+import { SECRET, FRONT_URL } from "../config/keys";
 
 // Models
 import User from "../Modules/User/Models/User";
-
-// Injects env variables into this node process
-dotenv.config();
 
 // generates JWT token
 function createJWT(payload: any) {
     const options = {
         expiresIn: '364d',
-        issuer: process.env.FRONT_URL
+        issuer: FRONT_URL
     }
-    const secret = process.env.SECRET ?? '';
-    return jwt.sign(payload, secret, options);
+    
+    return jwt.sign(payload, SECRET, options);
 }
 
 export default {

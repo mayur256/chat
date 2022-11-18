@@ -1,11 +1,8 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-
-// Injects env variables into this node process
-dotenv.config();
+import { MONGO_URI } from "./keys";
 
 // Connection URI
-const mongoURI = `mongodb://${process.env.HOST}:${process.env.MONGO_PORT}/${process.env.DB_NAME}`;
+const mongoURI = MONGO_URI;
 
 // Connection options
 const options = {

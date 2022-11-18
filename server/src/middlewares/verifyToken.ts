@@ -1,10 +1,7 @@
 // NPM modules
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
-// Injects env variables into this node process
-dotenv.config();
+import { SECRET, FRONT_URL } from "../config/keys";
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
     const authHeader = req.cookies.authorization;
@@ -14,12 +11,12 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
         const token = authHeader;
         const options = {
             expiresIn: '364d',
-            issuer: process.env.FRONT_URL
+            issuer: FRONT_URL
         };
 
         try {
             // verify makes sure that the token hasn't expired and has been issued by us
-            result = jwt.verify(token, process.env.SECRET!, options);
+            result = jwt.verify(token, SECRET!, options);
 
             // Let's pass back the decoded token to the request object
             req.body.decoded = result;
