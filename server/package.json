@@ -4,6 +4,9 @@
   "main": "index.ts",
   "author": "Mayur",
   "license": "MIT",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
