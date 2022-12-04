@@ -1,4 +1,5 @@
-import express, { Application } from 'express';
+import express, { Application, Request, Response } from 'express';
+import path from 'path';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors'
@@ -17,166 +18,183 @@ import { ServerToClientEvents, ClientToServerEvents, Message, InterServerEvents 
 import { addUser, getUserBySocketId, removeUser } from "./state";
 import user from './Modules/User/Controllers/user';
 
+// Utils
+import { NODE_ENV } from "./config/keys";
+
 // Application Class
 class App {
-  private express: Application;
-  public httpServer: any;
-  private ioSocket: any;
-  private activeClientSocket: any = null;
+    private express: Application;
+    public httpServer: any;
+    private ioSocket: any;
+    private activeClientSocket: any = null;
 
-  // application constructor
-  constructor() {
-    // Initializing http, express and socket server
-    this.express = express();
-    this.enableCookieParser();
-    this.parseJsonBody();
-    // enable CORS middleware
-    this.enableCors();
-    this.createHttpServer();
-    this.createSocketServer();
-    
-    // establish connection with database
-    this.dbConnect();
-    // enable routing
-    this.mountRoutes();
-    // waits for connection event on socket
-    this.captureSocketConnectionEvent()
-  }
+    // application constructor
+    constructor() {
+        // Initializing http, express and socket server
+        this.express = express();
+        this.enableCookieParser();
+        this.parseJsonBody();
+        // enable CORS middleware
+        this.enableCors();
+        this.createHttpServer();
+        this.createSocketServer();
 
-  // create http server
-  createHttpServer() {
-    this.httpServer = createServer(this.express);
-  }
+        // establish connection with database
+        this.dbConnect();
+        // enable routing
+        this.mountRoutes();
+        // waits for connection event on socket
+        this.captureSocketConnectionEvent();
+        this.serveStatic();
+    }
 
-  // create socket server on top of http server
-  createSocketServer() {
-    this.ioSocket = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents>(this.httpServer, {
-      cors: {
-        origin: '*',
-      },
-    });
-  }
+    // create http server
+    createHttpServer() {
+        this.httpServer = createServer(this.express);
+    }
 
-  parseJsonBody = () => {
-    this.express.use(express.urlencoded({ extended: true }));
-    this.express.use(express.json());
-  }
+    // create socket server on top of http server
+    createSocketServer() {
+        this.ioSocket = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents>(this.httpServer, {
+            cors: {
+                origin: '*',
+            },
+        });
+    }
 
-  captureSocketConnectionEvent = () => {
-    // fired when a new connection is established
-    this.ioSocket.on('connection', (clientSocket: any): void => {
-      // sign in event from client
-      this.activeClientSocket = clientSocket;
-      this.activeClientSocket.on('signIn', (userId: string): void => {
-        // at this point client is signed in
-        // store the connect client in server global state
-        addUser({ userId, socketId: this.activeClientSocket.id });
-        
-        // handle events or messages specific to a client
-        this.handleClientEvents();
-        
-        // handle online status change
-        this.handleUserOnlineStatus(userId);
-      });
-    });
-  }
+    parseJsonBody = () => {
+        this.express.use(express.urlencoded({ extended: true }));
+        this.express.use(express.json());
+    }
 
-  handleUserOnlineStatus = async (userId: string): Promise<void> => {
-    try {
-      if (await userController.setOnlineStatus(userId, true)) {
-        this.activeClientSocket.broadcast.emit('isOnline', userId);
-      }
+    captureSocketConnectionEvent = () => {
+        // fired when a new connection is established
+        this.ioSocket.on('connection', (clientSocket: any): void => {
+            // sign in event from client
+            this.activeClientSocket = clientSocket;
+            this.activeClientSocket.on('signIn', (userId: string): void => {
+                // at this point client is signed in
+                // store the connect client in server global state
+                addUser({ userId, socketId: this.activeClientSocket.id });
+
+                // handle events or messages specific to a client
+                this.handleClientEvents();
+
+                // handle online status change
+                this.handleUserOnlineStatus(userId);
+            });
+        });
+    }
+
+    handleUserOnlineStatus = async (userId: string): Promise<void> => {
+        try {
+            if (await userController.setOnlineStatus(userId, true)) {
+                this.activeClientSocket.broadcast.emit('isOnline', userId);
+            }
+
+        } catch (ex: any) {
+            console.log(`Error in App.handleUserOnlineStatus :: ${ex}`)
+        }
+    }
+
+    handleClientEvents = () => {
+        // fired when a user send a message
+        this.activeClientSocket.on('message', this.handleClientMessage);
+        // fired when a user is typing
+        this.activeClientSocket.on('isTyping', this.handleTyping);
+        // fired when connection disconnects / lost
+        this.activeClientSocket.on('disconnect', this.handleUserDisconnect);
+    }
+
+    handleClientMessage = (message: Message) => {
+        // store the message via controller
+        try {
+            messageController.storeMessage(message);
+            /*const toBeEchoedMsg = {
+              _id: Math.floor(Math.random() * 1000000000),
+              ...message
+            }
       
-    } catch (ex: any) {
-      console.log(`Error in App.handleUserOnlineStatus :: ${ex}`)
+            this.ioSocket.emit('echoMessage', toBeEchoedMsg);*/
+        } catch (ex: any) {
+            console.log(`Error while storing client message in database`)
+        }
     }
-  }
 
-  handleClientEvents = () => {
-    // fired when a user send a message
-    this.activeClientSocket.on('message', this.handleClientMessage);
-    // fired when a user is typing
-    this.activeClientSocket.on('isTyping', this.handleTyping);
-    // fired when connection disconnects / lost
-    this.activeClientSocket.on('disconnect', this.handleUserDisconnect);
-  }
-
-  handleClientMessage = (message: Message) => {
-    // store the message via controller
-    try {
-      messageController.storeMessage(message);
-      /*const toBeEchoedMsg = {
-        _id: Math.floor(Math.random() * 1000000000),
-        ...message
-      }
-
-      this.ioSocket.emit('echoMessage', toBeEchoedMsg);*/
-    } catch (ex: any) {
-      console.log(`Error while storing client message in database`)
+    handleUserDisconnect = async () => {
+        const connectedUser = getUserBySocketId(this.activeClientSocket?.id ?? '');
+        if (connectedUser) {
+            await user.setOnlineStatus(connectedUser.userId, false);
+            this.activeClientSocket.broadcast.emit('user-disconnected', connectedUser.userId);
+        }
+        removeUser(this.activeClientSocket.id);
     }
-  }
 
-  handleUserDisconnect = async () => {
-    const connectedUser = getUserBySocketId(this.activeClientSocket?.id ?? '');
-    if (connectedUser) {
-      await user.setOnlineStatus(connectedUser.userId, false);
-      this.activeClientSocket.broadcast.emit('user-disconnected', connectedUser.userId);
+    handleTyping = (userId: string) => {
+        this.getSocketServer().emit('typingEchoed', userId);
     }
-    removeUser(this.activeClientSocket.id);
-  }
 
-  handleTyping = (userId: string) => {
-    this.getSocketServer().emit('typingEchoed', userId);
-  }
+    enableCors() {
+        const corsOptions = {
+            origin: 'http://localhost:3000',
+        };
 
-  enableCors() {
-    const corsOptions = {
-      origin: 'http://localhost:3000',
+        this.express.use(cors(corsOptions));
+    }
+
+    // Initialize db connection
+    dbConnect = () => {
+        try {
+            connectHandler.connect();
+        } catch (err) {
+            connectHandler.disconnect();
+        }
+    }
+
+    // register routes into the application
+    mountRoutes = () => {
+        const router = express.Router();
+        assembleRoutes(router);
+        this.express.use('/api', router);
     };
 
-    this.express.use(cors(corsOptions));
-  }
-
-  // Initialize db connection
-  dbConnect = () => {
-    try {
-      connectHandler.connect();
-    } catch (err) {
-      connectHandler.disconnect();
+    // enable cookie-parser
+    enableCookieParser = () => {
+        this.express.use(cookieParser())
     }
-  }
 
-  // register routes into the application
-  mountRoutes = () => {
-    const router = express.Router();
-    assembleRoutes(router);
-    this.express.use('/api', router);
-  };
+    // getter for httpServer
+    getHttpServer = () => {
+        return this.httpServer;
+    }
 
-  // enable cookie-parser
-  enableCookieParser = () => {
-    this.express.use(cookieParser())
-  }
+    // getter for socket server
+    getSocketInstance = () => {
+        return this.ioSocket;
+    }
 
-  // getter for httpServer
-  getHttpServer = () => {
-    return this.httpServer;
-  }
+    // getter for current connected client socket
+    getClientSocket = () => {
+        return this.activeClientSocket;
+    }
 
-  // getter for socket server
-  getSocketInstance = () => {
-    return this.ioSocket;
-  }
+    // getter for socket server
+    getSocketServer = () => {
+        return this.ioSocket;
+    }
 
-  // getter for current connected client socket
-  getClientSocket = () => {
-    return this.activeClientSocket;
-  }
-
-  // getter for socket server
-  getSocketServer = () => {
-    return this.ioSocket;
-  }
+    // enable serving of static assets
+    serveStatic(): void {
+        console.log(NODE_ENV);
+        // Serve the frontend in production
+        if (NODE_ENV === 'production') {
+            //Serve static files for frontend
+            this.express.use(express.static('client/build'));
+            this.express.get('*', (req: Request, res: Response) => {
+                res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+            });
+        }
+    }
 }
 
 // Instantiate App
