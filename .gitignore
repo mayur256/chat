@@ -104,3 +104,6 @@ dist
 .tern-port
 
 /server/Procfile
+
+# production
+client/build
