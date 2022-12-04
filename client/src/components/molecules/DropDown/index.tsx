@@ -3,29 +3,38 @@ import { ReactElement, ReactNode } from "react";
 
 // Atoms / Molecules
 import Icon from "../../atoms/Icon";
+import Button from "../../atoms/Button";
 
 //type definitions for props
 type CProps = {
-  children: ReactNode | ReactNode[]
+    children: ReactNode | ReactNode[]
+    triggerSize?: string;
+    triggerIconKey?: string;
 }
 
 // Component definition
-const Dropdown = ({ children }: CProps):ReactElement => {
-  return (
-    <>
-      {/** Dropdown trigger */}
-      <span id="action_menu_btn">
-        <Icon iconKey="ellipsis-v"/>
-      </span>
+const Dropdown = ({
+    children,
+    triggerSize,
+    triggerIconKey = "ellipsis-v"
+}: CProps): ReactElement => {
+    return (
+        <div className="dropdown">
+            {/** Dropdown trigger */}
+            <Button
+                data-toggle="dropdown"
+                aria-expanded="false"
+                size={triggerSize}
+            >
+                <Icon iconKey={triggerIconKey} />
+            </Button>
 
-      {/** Items Container */}
-      <div className="action_menu">
-        <ul>
-          { children }
-        </ul>
-      </div>
-    </>
-  )
+            {/** Items Container */}
+            <ul className="dropdown-menu dropdown-menu-right">
+                {children}
+            </ul>
+        </div>
+    )
 }
 
 export default Dropdown;

@@ -118,7 +118,7 @@ const Register = (): ReactElement => {
                             onBlur={formik.handleBlur}
                         />
 
-                        {formik.touched.firstName && (
+                        {formik.touched.firstName && formik.errors.firstName && (
                             <ErrorMessage text={formik.errors.firstName ?? ''} className="text-danger" />
                         )}
                     </FormControl>
@@ -139,7 +139,7 @@ const Register = (): ReactElement => {
                             onBlur={formik.handleBlur}
                         />
 
-                        {formik.touched.lastName && (
+                        {formik.touched.lastName && formik.errors.lastName && (
                             <ErrorMessage text={formik.errors.lastName ?? ''} className="text-danger" />
                         )}
                     </FormControl>
@@ -159,7 +159,7 @@ const Register = (): ReactElement => {
                     onBlur={formik.handleBlur}
                 />
 
-                {formik.touched.email && (
+                {formik.touched.email && formik.errors.email && (
                     <ErrorMessage text={formik.errors.email ?? ''} className="text-danger" />
                 )}
             </FormControl>
@@ -177,7 +177,7 @@ const Register = (): ReactElement => {
                     onBlur={formik.handleBlur}
                 />
 
-                {formik.touched.password && (
+                {formik.touched.password && formik.errors.password && (
                     <ErrorMessage text={formik.errors.password ?? ''} className="text-danger" />
                 )}
             </FormControl>
@@ -195,7 +195,7 @@ const Register = (): ReactElement => {
                     onBlur={formik.handleBlur}
                 />
 
-                {formik.touched.confirmPassword && (
+                {formik.touched.confirmPassword && formik.errors.confirmPassword && (
                     <ErrorMessage text={formik.errors.confirmPassword ?? ''} className="text-danger" />
                 )}
             </FormControl>

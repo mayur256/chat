@@ -14,52 +14,55 @@ import { ContactThreadType } from "../../types";
 
 // Props type definition
 interface IProps {
-  selectedContact: ContactThreadType;
-  messagesLength: number;
+    selectedContact: ContactThreadType;
+    messagesLength: number;
 }
 
 // Component definition
 const Header = ({
-  selectedContact,
-  messagesLength
+    selectedContact,
+    messagesLength
 }: IProps): ReactElement => {
-  // Props destructuring to get data
-  const { name, avatar, online } = selectedContact;
+    // Props destructuring to get data
+    const { name, avatar, online } = selectedContact;
 
-  return (
-    <>
-      <div className="card-header msg_head">
-        <div className="d-flex bd-highlight">
+    return (
+        <>
+            <div className="card-header msg_head">
+                <div className="d-flex bd-highlight">
 
-          <Avatar
-            src={avatar}
-            online={online}
-          />
+                    <Avatar
+                        src={avatar}
+                        online={online}
+                    />
 
-          <UserInfo
-            name={name}
-            count={messagesLength}
-          />
+                    <UserInfo
+                        name={name}
+                        count={messagesLength}
+                    />
 
-          <CallIcons>
-            <Icon iconKey="video" />
-            <Icon iconKey="phone" />
-          </CallIcons>
+                    <CallIcons>
+                        <Icon iconKey="video" />
+                        <Icon iconKey="phone" />
+                    </CallIcons>
 
-        </div>
-        {/** Dropdown Element */}
-        <Dropdown>
-          <DropdownItem>
-            <Icon iconKey="user-circle" /> View profile
-            <Icon iconKey="users" /> Add to close friends
-            <Icon iconKey="plus" /> Add to group
-            <Icon iconKey="ban" /> Block
-          </DropdownItem>
-        </Dropdown>
+                </div>
+                {/** Dropdown Element */}
+                {/* <Dropdown>
+                    <DropdownItem>
+                        <Icon iconKey="users" /> Add to close friends
+                    </DropdownItem>
+                    <DropdownItem>
+                        <Icon iconKey="plus" /> Add to group
+                    </DropdownItem>
+                    <DropdownItem>
+                        <Icon iconKey="ban" /> Block
+                    </DropdownItem>
+                </Dropdown> */}
 
-      </div>
-    </>
-  )
+            </div>
+        </>
+    )
 }
 
 export default Header;
