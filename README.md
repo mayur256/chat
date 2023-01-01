@@ -14,9 +14,9 @@ A Simple chat app that facilitates peer to peer transmission of text messages ov
 * Enable sound notification when a user sends a message.
 
 ## Screenshots
-1. Registration
+### 1. Registration
 ![Registration](https://github.com/mayur256/chat/blob/main/app-sc/chat_register.png)
-2. Login
+### 2. Login
 ![Login](https://github.com/mayur256/chat/blob/main/app-sc/chat_login.png)
-3. Home
+### 3. Home
 ![Home](https://github.com/mayur256/chat/blob/main/app-sc/chat_home.png)
