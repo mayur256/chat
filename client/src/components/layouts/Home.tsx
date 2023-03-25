@@ -15,7 +15,7 @@ import MessageArea from "./MessageArea";
 import Alert from "../atoms/Alert";
 
 // types
-import { ContactThreadType, MessageType } from '../types';
+import { ContactThreadType, GroupType, MessageType } from '../types';
 
 // API services
 import { getUsers } from "../../api/user";
@@ -35,8 +35,13 @@ const Home = (): ReactElement => {
     const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [contacts, setContacts] = useState<ContactThreadType[]>([]);
-    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[]>([]);
-    const [selectedContact, setSelectedContact] = useState<ContactThreadType | null>(null);
+    const [groups, setGroups] = useState<GroupType[]>([{
+        _id: '1',
+        name: 'Group1'
+    }]);
+    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
+    const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
+    const [contactType, setContactType] = useState('people');
 
     // hooks
     // const navigate = useNavigate();
@@ -89,25 +94,30 @@ const Home = (): ReactElement => {
 
     // contact selected
     const onContactSelected = (contactId: string): void => {
-        const transformedContacts: ContactThreadType[] = filteredContacts.map((contact: ContactThreadType): ContactThreadType => {
-            if (contactId === contact._id) {
+        const transformedContacts: ContactThreadType[] | GroupType[] = filteredContacts
+            .map((contact: ContactThreadType | GroupType): ContactThreadType | GroupType => {
+                if (contactId === contact._id) {
+                    return {
+                        ...contact,
+                        isSelected: true,
+                    }
+                }
+
                 return {
                     ...contact,
-                    isSelected: true,
+                    isSelected: false
                 }
-            }
-
-            return {
-                ...contact,
-                isSelected: false
-            }
-        });
+            });
 
         setFilteredContacts(transformedContacts);
 
         // find and set selected contact
         const contact = transformedContacts.find(({ _id }): boolean => contactId === _id);
-        if (contact) setSelectedContact(contact);
+        if (contact && contactType === 'people') {
+            setSelectedContact(contact as ContactThreadType);
+        } else {
+            setSelectedContact(contact as GroupType);
+        }
 
         fetchMessages(contactId);
     }
@@ -159,16 +169,33 @@ const Home = (): ReactElement => {
 
     // changes contacts online status
     const changeContactOnlineStatus = (userId: string, onlineStatus: boolean): void => {
-        setFilteredContacts((prevState: ContactThreadType[]): ContactThreadType[] => {
-            return prevState.map((contact: ContactThreadType): ContactThreadType => {
+        setFilteredContacts((prevState: ContactThreadType[] | GroupType[]): ContactThreadType[] | GroupType[] => {
+            return prevState.map((contact: ContactThreadType | GroupType): ContactThreadType | GroupType => {
                 if (contact._id === userId) {
                     const tContact = { ...contact, online: onlineStatus };
-                    setSelectedContact(tContact);
+                    if (contactType === 'people') {
+                        setSelectedContact(tContact as ContactThreadType);
+                    } else {
+                        setSelectedContact(tContact as GroupType);
+                    }
                     return tContact
                 };
                 return contact;
             })
         });
+    }
+
+    // handles tab change of contact type
+    const handleContactTypeChange = (type: string): void => {
+        if (type === contactType) return;
+        
+        setContactType(type);
+        
+        if (type === 'people') {
+            setFilteredContacts(contacts);
+        } else {
+            setFilteredContacts(groups);
+        }
     }
 
     // JSX Code
@@ -187,9 +214,11 @@ const Home = (): ReactElement => {
             </div>
 
             <ContactsList
-                contacts={filteredContacts}
-                contactSelected={onContactSelected}
+                chatItems={filteredContacts}
+                chatItemSelected={onContactSelected}
                 initiateSearch={onSearchInitiated}
+                contactType={contactType}
+                onContactTypeChange={handleContactTypeChange}
             />
 
             {/** Chat Message Area */}

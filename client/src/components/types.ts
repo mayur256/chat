@@ -9,6 +9,14 @@ export interface MessageType {
     send?: boolean;
     _id?: string;
 }
+export interface GroupType {
+    _id: string;
+    name: string;
+    avatar?: string;
+    online?: boolean;
+    messages?: MessageType[],
+    isSelected?: boolean | undefined;
+}
 
 export interface ContactThreadType {
     _id: string;

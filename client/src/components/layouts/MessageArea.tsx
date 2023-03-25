@@ -15,12 +15,13 @@ import {
   ContactThreadType,
   ClientToServerEvents,
   ServerToClientEvents,
-  TDivRef
+  TDivRef,
+  GroupType
 } from '../types';
 
 // props type definitions
 interface IProps {
-  selectedContact: ContactThreadType;
+  selectedContact: ContactThreadType | GroupType;
   messages: MessageType[];
   sendMessage: (message: string) => void;
   socket?: Socket<ClientToServerEvents, ServerToClientEvents>

@@ -22,12 +22,13 @@ import {
   ServerToClientEvents,
   ClientToServerEvents,
   ContactThreadType,
-  TDivRef
+  TDivRef,
+  GroupType
 } from "../../types";
 
 // props type definition
 interface IProps extends ComponentPropsWithRef<"div"> {
-  selectedContact: ContactThreadType;
+  selectedContact: ContactThreadType | GroupType;
   messages: MessageType[];
   socket?: Socket<ServerToClientEvents, ClientToServerEvents>
 }
