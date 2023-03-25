@@ -6,15 +6,13 @@ import Avatar from "../../atoms/Avatar";
 import UserInfo from "../../atoms/UserInfo";
 import CallIcons from "../../molecules/CallIcons";
 import Icon from "../../atoms/Icon";
-import Dropdown from "../../molecules/DropDown";
-import DropdownItem from "../../atoms/DropdownItem";
 
 // types import
-import { ContactThreadType } from "../../types";
+import { ContactThreadType, GroupType } from "../../types";
 
 // Props type definition
 interface IProps {
-    selectedContact: ContactThreadType;
+    selectedContact: ContactThreadType | GroupType;
     messagesLength: number;
 }
 
@@ -32,7 +30,7 @@ const Header = ({
                 <div className="d-flex bd-highlight">
 
                     <Avatar
-                        src={avatar}
+                        src={avatar ?? ''}
                         online={online}
                     />
 
