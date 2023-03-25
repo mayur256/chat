@@ -8,6 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store/types";
 
+// Sweetalert
+import Swal, { SweetAlertResult } from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
 // Utilities
 import { removeAuthUserFromStorage } from "../../../utilities/Common";
 
@@ -19,6 +23,9 @@ import DropdownItem from "../../atoms/DropdownItem";
 
 // Component definition
 const Navbar = (): ReactElement => {
+    // Sweetalert initialization
+    const MySwal = withReactContent(Swal);
+
     // hooks
     const authUser = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch();
@@ -32,18 +39,44 @@ const Navbar = (): ReactElement => {
     }
 
     const onMenuItemClicked = (eventKey: string | undefined): void => {
+        const eventHandlers: { [key: string]: () => void } = {
+            'logout': () => logout(),
+            'create-room': () => onCreateRoomClicked()
+        };
 
-        if (eventKey === 'logout') {
-            logout();
-        }
+        eventHandlers[eventKey ?? '']?.();
     }
+
+    const onCreateRoomClicked = () => {
+        MySwal.fire({
+            title: 'Create Room',
+            html: (
+                <form>
+                    <div className="mb-3">
+                        <label htmlFor="group-name" className="form-label">Group Name</label>
+                        <input type="text" className="form-control" id="group-name" />
+                    </div>
+                </form>
+            ),
+            confirmButtonText: 'Save',
+            cancelButtonText: 'Cancel',
+            showCancelButton: true,
+            showCloseButton: true
+        }).then((result: SweetAlertResult) => {
+            if (result.isConfirmed) {
+                const groupName = (document.getElementById('group-name') as HTMLInputElement)?.value;
+                console.log(groupName)
+            }
+        });
+    }
+
     /**Handler function - ends  */
 
     // Main JSX
     return (
-        <nav className="navbar navbar-light bg-primary">
-            <span>Welcome <b>{ authUser.name }!</b></span>
-            
+        <nav className="navbar navbar-light bg-primary d-flex">
+            <span>Welcome <b>{authUser.name}!</b></span>
+
             <div id="action_menu">
                 <Dropdown
                     triggerIconKey="cog"
@@ -51,6 +84,10 @@ const Navbar = (): ReactElement => {
                 >
                     <DropdownItem eventKey="view-profile" onItemClicked={onMenuItemClicked}>
                         <Icon iconKey="user-circle" /> View profile
+                    </DropdownItem>
+
+                    <DropdownItem eventKey="create-room" onItemClicked={onMenuItemClicked}>
+                        <Icon iconKey="plus" /> Create Room
                     </DropdownItem>
 
                     <DropdownItem eventKey="logout" onItemClicked={onMenuItemClicked}>
