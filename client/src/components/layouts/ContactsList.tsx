@@ -91,7 +91,7 @@ const ContactsList = ({
                     }
 
                     {!chatItems.length && (
-                        <div className="text-center text-white">No Contacts Found</div>
+                        <div className="text-center text-white">No Contacts / Groups Found</div>
                     )}
 
                 </ContactThreads>

@@ -35,10 +35,7 @@ const Home = (): ReactElement => {
     const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [contacts, setContacts] = useState<ContactThreadType[]>([]);
-    const [groups, setGroups] = useState<GroupType[]>([{
-        _id: '1',
-        name: 'Group1'
-    }]);
+    const [groups] = useState<GroupType[]>([]);
     const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
     const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
     const [contactType, setContactType] = useState('people');
