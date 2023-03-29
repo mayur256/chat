@@ -29,20 +29,21 @@ import { ServerToClientEvents, ClientToServerEvents } from "../types";
 
 // Component definition
 const Home = (): ReactElement => {
+    // Constants
     const SOCKET_SERVER_ENDPOINT = "http://localhost:4001";
-
-    // state definitions
-    const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
-    const [messages, setMessages] = useState<MessageType[]>([]);
-    const [contacts, setContacts] = useState<ContactThreadType[]>([]);
-    const [groups] = useState<GroupType[]>([]);
-    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
-    const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
-    const [contactType, setContactType] = useState('people');
 
     // hooks
     // const navigate = useNavigate();
     const authUserId = useSelector((state: RootState) => state.user._id);
+    const groupsFromStore = useSelector((state: RootState) => state.groups);
+    
+    // state definitions
+    const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
+    const [messages, setMessages] = useState<MessageType[]>([]);
+    const [contacts, setContacts] = useState<ContactThreadType[]>([]);
+    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
+    const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
+    const [contactType, setContactType] = useState('people');
 
     // check if socket is connected
     // send signIn event to server
@@ -191,7 +192,7 @@ const Home = (): ReactElement => {
         if (type === 'people') {
             setFilteredContacts(contacts);
         } else {
-            setFilteredContacts(groups);
+            setFilteredContacts(groupsFromStore);
         }
     }
 

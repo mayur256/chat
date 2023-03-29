@@ -42,6 +42,7 @@ const ContactsList = ({
             initiateSearch(targetVal);
         }, 1000)
     }
+
     // JSX
     return (
         <div className="col-md-4 col-xl-3 col-sm-5">
@@ -56,6 +57,7 @@ const ContactsList = ({
                     {contactTypes.map((type) => {
                         return (
                             <li
+                                key={type}
                                 className="nav-item col-md-6 p-0"
                                 role="presentation"
                                 onClick={() => onContactTypeChange(type)}

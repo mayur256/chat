@@ -74,7 +74,9 @@ const Navbar = (): ReactElement => {
                     const group: GroupType = {
                         _id: new Date().getTime().toString(36),
                         name: groupName,
-                        messages: []
+                        messages: [],
+                        members: [],
+                        created_by: authUser._id
                     }
                     dispatch(ADD_GROUP(group));
                 }

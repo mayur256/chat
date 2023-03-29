@@ -12,6 +12,8 @@ export interface MessageType {
 export interface GroupType {
     _id: string;
     name: string;
+    members?: Array<string>;
+    created_by?: string;
     avatar?: string;
     online?: boolean;
     messages?: MessageType[],
