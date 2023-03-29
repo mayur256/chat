@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 // React-redux
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store/types";
+// redux-actions
+import { ADD_GROUP } from "../../../store/reducers/groupSlice";
 
 // Sweetalert
 import Swal, { SweetAlertResult } from 'sweetalert2';
@@ -14,6 +16,8 @@ import withReactContent from 'sweetalert2-react-content';
 
 // Utilities
 import { removeAuthUserFromStorage } from "../../../utilities/Common";
+// types
+import { GroupType } from "../../types";
 
 // Atoms / Molecules / Organisms
 import Icon from "../../atoms/Icon";
@@ -65,7 +69,17 @@ const Navbar = (): ReactElement => {
         }).then((result: SweetAlertResult) => {
             if (result.isConfirmed) {
                 const groupName = (document.getElementById('group-name') as HTMLInputElement)?.value;
-                console.log(groupName)
+                
+                if (groupName) {
+                    const group: GroupType = {
+                        _id: new Date().getTime().toString(36),
+                        name: groupName,
+                        messages: [],
+                        members: [],
+                        created_by: authUser._id
+                    }
+                    dispatch(ADD_GROUP(group));
+                }
             }
         });
     }

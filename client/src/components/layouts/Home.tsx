@@ -29,23 +29,21 @@ import { ServerToClientEvents, ClientToServerEvents } from "../types";
 
 // Component definition
 const Home = (): ReactElement => {
+    // Constants
     const SOCKET_SERVER_ENDPOINT = "http://localhost:4001";
-
-    // state definitions
-    const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
-    const [messages, setMessages] = useState<MessageType[]>([]);
-    const [contacts, setContacts] = useState<ContactThreadType[]>([]);
-    const [groups, setGroups] = useState<GroupType[]>([{
-        _id: '1',
-        name: 'Group1'
-    }]);
-    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
-    const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
-    const [contactType, setContactType] = useState('people');
 
     // hooks
     // const navigate = useNavigate();
     const authUserId = useSelector((state: RootState) => state.user._id);
+    const groupsFromStore = useSelector((state: RootState) => state.groups);
+    
+    // state definitions
+    const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
+    const [messages, setMessages] = useState<MessageType[]>([]);
+    const [contacts, setContacts] = useState<ContactThreadType[]>([]);
+    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
+    const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
+    const [contactType, setContactType] = useState('people');
 
     // check if socket is connected
     // send signIn event to server
@@ -88,7 +86,7 @@ const Home = (): ReactElement => {
             sent_at: new Date(),
             send: true
         };
-
+        playMsgSend();
         socket?.emit('message', message);
     }
 
@@ -154,6 +152,7 @@ const Home = (): ReactElement => {
 
     // handles echoed mesage from server
     const handleEchoedMessage = (message: MessageType): void => {
+        playMsgReceived();
         setMessages(prevMsg => [...prevMsg, message]);
     }
 
@@ -185,17 +184,32 @@ const Home = (): ReactElement => {
         });
     }
 
-    // handles tab change of contact type
     const handleContactTypeChange = (type: string): void => {
         if (type === contactType) return;
-        
+
         setContactType(type);
-        
+
         if (type === 'people') {
             setFilteredContacts(contacts);
         } else {
-            setFilteredContacts(groups);
+            setFilteredContacts(groupsFromStore);
         }
+    }
+
+    // plays sound when message is sent
+    const playMsgSend = () => {
+        playSound('assets/sound/send.mp3');
+    }
+
+    // plays sound when message is received
+    const playMsgReceived = () => {
+        playSound('assets/sound/send.mp3');
+    }
+
+    // plays a sound file passed as arg
+    const playSound = (filePath: string): void => {
+        const audio = new Audio(filePath);
+        audio.play();
     }
 
     // JSX Code
