@@ -23,7 +23,7 @@ class User {
         };
 
         try {
-            const users = await userManager.getUsers(req.body.decoded.id);
+            const users = await userManager.getUsers();
             if (users) resPayload.data = users;
         } catch (ex) {
             resPayload.error = true;

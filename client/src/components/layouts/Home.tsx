@@ -41,6 +41,7 @@ const Home = (): ReactElement => {
     const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
     const [messages, setMessages] = useState<MessageType[]>([]);
     const [contacts, setContacts] = useState<ContactThreadType[]>([]);
+    const [users, setUsers] = useState<ContactThreadType[]>([]);
     const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
     const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
     const [contactType, setContactType] = useState('people');
@@ -65,12 +66,16 @@ const Home = (): ReactElement => {
     const fetchUsers = async (): Promise<void> => {
         const payload = await getUsers();
         if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
-            const users: ContactThreadType[] = payload.data.map((user, idx) => idx === 0 ? { ...user, isSelected: true } : user);
-
-            setContacts(users);
-            setFilteredContacts(users);
-            setSelectedContact(users[0]);
-            fetchMessages(users[0]._id);
+            const users: ContactThreadType[] = payload.data;
+            const contacts: ContactThreadType[] = users
+                .filter(user => user._id !== authUserId)
+                .map((user, idx) => idx === 0 ? { ...user, isSelected: true } : user);
+            
+            setUsers(users);
+            setContacts(contacts);
+            setFilteredContacts(contacts);
+            setSelectedContact(contacts[0]);
+            fetchMessages(contacts[0]._id);
         } else if (!payload.data.length) {
             (document.querySelector("#logout-btn") as HTMLDivElement)?.click();
         }
@@ -215,7 +220,7 @@ const Home = (): ReactElement => {
     // JSX Code
     return (
         <>
-            <Navbar />
+            <Navbar users={users} />
 
             <div className="col-md-12 messages-alert-container">
                 {NODE_ENV !== 'development' && (
