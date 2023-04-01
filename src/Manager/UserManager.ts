@@ -7,11 +7,11 @@ class UserManager {
      * @param {string} loggedInUserId - User Id of auth user 
      * @returns {IUserModel | unknown} - user or null or undefined
      */
-    getUsers = async (loggedInUserId: string): Promise<Partial<IUserModel> | unknown> => {
+    getUsers = async (): Promise<Partial<IUserModel> | unknown> => {
         let result;
 
         try {
-            result = await User.find({_id: {$ne: loggedInUserId}}).
+            result = await User.find({}).
                 select({
                     name: 1,
                     email: 1,

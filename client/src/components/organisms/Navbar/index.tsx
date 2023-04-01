@@ -17,23 +17,39 @@ import withReactContent from 'sweetalert2-react-content';
 // Utilities
 import { removeAuthUserFromStorage } from "../../../utilities/Common";
 // types
-import { GroupType } from "../../types";
+import { ContactThreadType, GroupType } from "../../types";
 
 // Atoms / Molecules / Organisms
 import Icon from "../../atoms/Icon";
-// import Button from "../../atoms/Button";
+import { Select } from "../../atoms/Select";
 import Dropdown from "../../molecules/DropDown";
 import DropdownItem from "../../atoms/DropdownItem";
 
+// Props type definition
+interface IProps {
+    users: ContactThreadType[]
+}
+
 // Component definition
-const Navbar = (): ReactElement => {
+const Navbar = ({ users }: IProps): ReactElement => {
+    // constants
+    const options = [
+        { key: 'chocolate', label: 'Chocolate' },
+        { key: 'strawberry', label: 'Strawberry' },
+        { key: 'vanilla', label: 'Vanilla' }
+    ]
+
     // Sweetalert initialization
     const MySwal = withReactContent(Swal);
 
     // hooks
-    const authUser = useSelector((state: RootState) => state.user);
+    const storeData = useSelector((state: RootState) => state);
     const dispatch = useDispatch();
     const navigator = useNavigate();
+
+    // Computed Properties
+    const authUser = storeData.user;
+    const userOptions = users.map((user) => ({ key: user._id, label: user.name }));
 
     /** Handler functions - starts */
     const logout = () => {
@@ -56,10 +72,19 @@ const Navbar = (): ReactElement => {
             title: 'Create Room',
             html: (
                 <form>
-                    <div className="mb-3">
+                    <div className="mb-3 text-left">
                         <label htmlFor="group-name" className="form-label">Group Name</label>
                         <input type="text" className="form-control" id="group-name" />
                     </div>
+
+                    <div className="mb-2 form-group text-left">
+                        <label htmlFor="exampleFormControlSelect2">Select users for the group</label>
+                        <Select
+                            options={userOptions}
+                            multiple
+                        />
+                    </div>
+
                 </form>
             ),
             confirmButtonText: 'Save',
