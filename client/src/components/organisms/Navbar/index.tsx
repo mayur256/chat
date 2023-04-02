@@ -1,8 +1,11 @@
 // Top level imports
-import { ChangeEvent, ReactElement, useState } from "react";
+import { ReactElement, useRef, useState } from "react";
 
 // React -router
 import { useNavigate } from "react-router-dom";
+
+// React-Select
+import RSelect from "react-select";
 
 // React-redux
 import { useSelector, useDispatch } from "react-redux";
@@ -17,11 +20,11 @@ import withReactContent from 'sweetalert2-react-content';
 // Utilities
 import { removeAuthUserFromStorage } from "../../../utilities/Common";
 // types
-import { ContactThreadType, GroupType } from "../../types";
+import { ContactThreadType, GroupType, SelectOption } from "../../types";
 
 // Atoms / Molecules / Organisms
 import Icon from "../../atoms/Icon";
-import { Select } from "../../atoms/Select";
+// import { Select } from "../../atoms/Select";
 import Dropdown from "../../molecules/DropDown";
 import DropdownItem from "../../atoms/DropdownItem";
 
@@ -32,29 +35,33 @@ interface IProps {
 
 // select wrapper type definition
 interface SProps {
-    userOptions: {key: string, label: string}[]
+    value: SelectOption[];
+    onSelectChange: (newVal: any) => void;
+    userOptions: SelectOption[];
 };
 
 // Select wrapper component
-function MySelect({ userOptions }: SProps): ReactElement {
-    // state definitions
-    const [value] = useState([])
+function MySelect({ userOptions, value, onSelectChange }: SProps): ReactElement {
+    const [selectVal, setSelectVal] = useState<SelectOption[]>(value);
 
-    const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        console.log(event)
+    const onChnageHandler = (newVal: any) => {
+        setSelectVal(newVal)
+        onSelectChange(newVal);
     }
-
     // Main renderer
     return (
         <>
             <label htmlFor="exampleFormControlSelect2">Select users for the group</label>
-            <Select
-                value={value}
-                name="group-users"
+            <RSelect
+                value={selectVal}
+                onChange={onChnageHandler}
                 options={userOptions}
-                multiple
-                onSelectChange={handleSelectChange}
-            />
+                isMulti
+                className="basic-multi-select"
+                classNamePrefix="select"
+                closeMenuOnScroll={false}
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}            />
         </>
     )
 }
@@ -70,9 +77,12 @@ const Navbar = ({ users }: IProps): ReactElement => {
     const dispatch = useDispatch();
     const navigator = useNavigate();
 
+    // refs
+    const groupUsersRef = useRef<SelectOption[]>([]);
+
     // Computed Properties
     const authUser = storeData.user;
-    const userOptions = users.map((user) => ({ key: user._id, label: user.name }));
+    const userOptions = users.map((user) => ({ value: user._id, label: user.name }));
 
     /** Handler functions - starts */
     const logout = () => {
@@ -102,6 +112,8 @@ const Navbar = ({ users }: IProps): ReactElement => {
 
                     <div className="mb-2 form-group text-left">
                         <MySelect
+                            value={groupUsersRef.current}
+                            onSelectChange={handleSelectChange}
                             userOptions={userOptions}
                         />
                     </div>
@@ -121,7 +133,7 @@ const Navbar = ({ users }: IProps): ReactElement => {
                         _id: new Date().getTime().toString(36),
                         name: groupName,
                         messages: [],
-                        members: [],
+                        members: groupUsersRef.current.map(el => el.value),
                         created_by: authUser._id
                     }
                     dispatch(ADD_GROUP(group));
@@ -130,6 +142,11 @@ const Navbar = ({ users }: IProps): ReactElement => {
         });
     }
 
+    // MySelect change handler
+    const handleSelectChange = (newVal: any): void => {
+        groupUsersRef.current = newVal;
+    }
+    
     /**Handler function - ends  */
 
     // Main JSX

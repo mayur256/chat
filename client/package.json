@@ -20,6 +20,7 @@
     "react-redux": "^8.0.1",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
+    "react-select": "^5.7.2",
     "socket.io-client": "^4.4.1",
     "sweetalert2": "^11.7.3",
     "sweetalert2-react-content": "^5.0.7",

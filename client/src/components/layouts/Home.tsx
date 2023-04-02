@@ -61,6 +61,11 @@ const Home = (): ReactElement => {
         registerSocketServerEvents(socketInstance);
     }, []);
 
+    // componentDidMount / componentDidUpdate
+    useEffect(() => {
+        setFilteredContacts(groupsFromStore);
+    }, [groupsFromStore]);
+
     // invoke API to fetch users
     const fetchUsers = async (): Promise<void> => {
         const payload = await getUsers();
@@ -119,7 +124,11 @@ const Home = (): ReactElement => {
             setSelectedContact(contact as GroupType);
         }
 
-        fetchMessages(contactId);
+        if (contact?.members) {
+            setMessages(contact?.messages ?? []);
+        } else {
+            fetchMessages(contactId);
+        }
     }
 
     // handles filtering of contacts based on user search query

@@ -60,3 +60,5 @@ export interface ClientToServerEvents {
 }
 
 export type TDivRef = HTMLDivElement;
+
+export type SelectOption = { value: string, label: string }

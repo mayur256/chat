@@ -1,8 +1,10 @@
 // top level imports
 import { ChangeEvent, ReactElement } from "react";
 
+// types
+import { SelectOption } from "../../types";
+
 // props type definitions
-type SelectOption = { key: string, label: string }
 interface IProps {
     name: string;
     options: Array<SelectOption>,
@@ -24,6 +26,7 @@ export function Select({
     // Main renderer
     return (
         <select
+            name={name}
             size={2}
             className="form-control"
             multiple={multiple}
@@ -31,8 +34,8 @@ export function Select({
             value={selectVal}
             onChange={onSelectChange}
         >
-            {options.map(({ key, label }: SelectOption): ReactElement => (
-                <option key={key} value={key}>{label}</option>
+            {options.map(({ value, label }: SelectOption): ReactElement => (
+                <option key={value} value={value}>{label}</option>
             ))}
         </select>
     )
