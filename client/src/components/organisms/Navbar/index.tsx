@@ -1,5 +1,5 @@
 // Top level imports
-import { ReactElement } from "react";
+import { ChangeEvent, ReactElement, useState } from "react";
 
 // React -router
 import { useNavigate } from "react-router-dom";
@@ -30,14 +30,37 @@ interface IProps {
     users: ContactThreadType[]
 }
 
+// select wrapper type definition
+interface SProps {
+    userOptions: {key: string, label: string}[]
+};
+
+// Select wrapper component
+function MySelect({ userOptions }: SProps): ReactElement {
+    // state definitions
+    const [value] = useState([])
+
+    const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        console.log(event)
+    }
+
+    // Main renderer
+    return (
+        <>
+            <label htmlFor="exampleFormControlSelect2">Select users for the group</label>
+            <Select
+                value={value}
+                name="group-users"
+                options={userOptions}
+                multiple
+                onSelectChange={handleSelectChange}
+            />
+        </>
+    )
+}
 // Component definition
 const Navbar = ({ users }: IProps): ReactElement => {
     // constants
-    const options = [
-        { key: 'chocolate', label: 'Chocolate' },
-        { key: 'strawberry', label: 'Strawberry' },
-        { key: 'vanilla', label: 'Vanilla' }
-    ]
 
     // Sweetalert initialization
     const MySwal = withReactContent(Swal);
@@ -78,10 +101,8 @@ const Navbar = ({ users }: IProps): ReactElement => {
                     </div>
 
                     <div className="mb-2 form-group text-left">
-                        <label htmlFor="exampleFormControlSelect2">Select users for the group</label>
-                        <Select
-                            options={userOptions}
-                            multiple
+                        <MySelect
+                            userOptions={userOptions}
                         />
                     </div>
 
