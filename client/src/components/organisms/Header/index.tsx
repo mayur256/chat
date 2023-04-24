@@ -6,15 +6,13 @@ import Avatar from "../../atoms/Avatar";
 import UserInfo from "../../atoms/UserInfo";
 import CallIcons from "../../molecules/CallIcons";
 import Icon from "../../atoms/Icon";
-import Dropdown from "../../molecules/DropDown";
-import DropdownItem from "../../atoms/DropdownItem";
 
 // types import
-import { ContactThreadType } from "../../types";
+import { ContactThreadType, GroupType } from "../../types";
 
 // Props type definition
 interface IProps {
-    selectedContact: ContactThreadType;
+    selectedContact: ContactThreadType | GroupType;
     messagesLength: number;
 }
 
@@ -27,41 +25,26 @@ const Header = ({
     const { name, avatar, online } = selectedContact;
 
     return (
-        <>
-            <div className="card-header msg_head">
-                <div className="d-flex bd-highlight">
+        <div className="card-header msg_head">
+            <div className="d-flex bd-highlight">
 
-                    <Avatar
-                        src={avatar}
-                        online={online}
-                    />
+                <Avatar
+                    src={avatar ?? ''}
+                    online={online}
+                />
 
-                    <UserInfo
-                        name={name}
-                        count={messagesLength}
-                    />
+                <UserInfo
+                    name={name}
+                    count={messagesLength}
+                />
 
-                    <CallIcons>
-                        <Icon iconKey="video" />
-                        <Icon iconKey="phone" />
-                    </CallIcons>
-
-                </div>
-                {/** Dropdown Element */}
-                {/* <Dropdown>
-                    <DropdownItem>
-                        <Icon iconKey="users" /> Add to close friends
-                    </DropdownItem>
-                    <DropdownItem>
-                        <Icon iconKey="plus" /> Add to group
-                    </DropdownItem>
-                    <DropdownItem>
-                        <Icon iconKey="ban" /> Block
-                    </DropdownItem>
-                </Dropdown> */}
+                <CallIcons>
+                    <Icon iconKey="video" />
+                    <Icon iconKey="phone" />
+                </CallIcons>
 
             </div>
-        </>
+        </div>
     )
 }
 

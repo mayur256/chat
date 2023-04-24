@@ -9,6 +9,16 @@ export interface MessageType {
     send?: boolean;
     _id?: string;
 }
+export interface GroupType {
+    _id: string;
+    name: string;
+    members?: Array<string>;
+    created_by?: string;
+    avatar?: string;
+    online?: boolean;
+    messages?: MessageType[],
+    isSelected?: boolean | undefined;
+}
 
 export interface ContactThreadType {
     _id: string;
@@ -50,3 +60,5 @@ export interface ClientToServerEvents {
 }
 
 export type TDivRef = HTMLDivElement;
+
+export type SelectOption = { value: string, label: string }

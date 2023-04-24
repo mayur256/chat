@@ -15,7 +15,7 @@ import MessageArea from "./MessageArea";
 import Alert from "../atoms/Alert";
 
 // types
-import { ContactThreadType, MessageType } from '../types';
+import { ContactThreadType, GroupType, MessageType } from '../types';
 
 // API services
 import { getUsers } from "../../api/user";
@@ -29,18 +29,21 @@ import { ServerToClientEvents, ClientToServerEvents } from "../types";
 
 // Component definition
 const Home = (): ReactElement => {
+    // Constants
     const SOCKET_SERVER_ENDPOINT = "http://localhost:4001";
-
-    // state definitions
-    const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
-    const [messages, setMessages] = useState<MessageType[]>([]);
-    const [contacts, setContacts] = useState<ContactThreadType[]>([]);
-    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[]>([]);
-    const [selectedContact, setSelectedContact] = useState<ContactThreadType | null>(null);
 
     // hooks
     // const navigate = useNavigate();
     const authUserId = useSelector((state: RootState) => state.user._id);
+    const groupsFromStore = useSelector((state: RootState) => state.groups);
+    
+    // state definitions
+    const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents>>()
+    const [messages, setMessages] = useState<MessageType[]>([]);
+    const [contacts, setContacts] = useState<ContactThreadType[]>([]);
+    const [filteredContacts, setFilteredContacts] = useState<ContactThreadType[] | GroupType[]>([]);
+    const [selectedContact, setSelectedContact] = useState<ContactThreadType | GroupType | null>(null);
+    const [contactType, setContactType] = useState('people');
 
     // check if socket is connected
     // send signIn event to server
@@ -58,16 +61,23 @@ const Home = (): ReactElement => {
         registerSocketServerEvents(socketInstance);
     }, []);
 
+    // componentDidMount / componentDidUpdate
+    useEffect(() => {
+        setFilteredContacts(groupsFromStore);
+    }, [groupsFromStore]);
+
     // invoke API to fetch users
     const fetchUsers = async (): Promise<void> => {
         const payload = await getUsers();
         if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
-            const users: ContactThreadType[] = payload.data.map((user, idx) => idx === 0 ? { ...user, isSelected: true } : user);
-
-            setContacts(users);
-            setFilteredContacts(users);
-            setSelectedContact(users[0]);
-            fetchMessages(users[0]._id);
+            const contacts: ContactThreadType[] = payload.data
+                .filter((user) => user?._id !== authUserId)
+                .map((user, idx) => idx === 0 ? { ...user, isSelected: true } : user);
+            
+            setContacts(contacts);
+            setFilteredContacts(contacts);
+            setSelectedContact(contacts[0]);
+            fetchMessages(contacts[0]._id);
         } else if (!payload.data.length) {
             (document.querySelector("#logout-btn") as HTMLDivElement)?.click();
         }
@@ -89,27 +99,36 @@ const Home = (): ReactElement => {
 
     // contact selected
     const onContactSelected = (contactId: string): void => {
-        const transformedContacts: ContactThreadType[] = filteredContacts.map((contact: ContactThreadType): ContactThreadType => {
-            if (contactId === contact._id) {
+        const transformedContacts: ContactThreadType[] | GroupType[] = filteredContacts
+            .map((contact: ContactThreadType | GroupType): ContactThreadType | GroupType => {
+                if (contactId === contact._id) {
+                    return {
+                        ...contact,
+                        isSelected: true,
+                    }
+                }
+
                 return {
                     ...contact,
-                    isSelected: true,
+                    isSelected: false
                 }
-            }
-
-            return {
-                ...contact,
-                isSelected: false
-            }
-        });
+            });
 
         setFilteredContacts(transformedContacts);
 
         // find and set selected contact
         const contact = transformedContacts.find(({ _id }): boolean => contactId === _id);
-        if (contact) setSelectedContact(contact);
+        if (contact && contactType === 'people') {
+            setSelectedContact(contact as ContactThreadType);
+        } else {
+            setSelectedContact(contact as GroupType);
+        }
 
-        fetchMessages(contactId);
+        if (contact?.members) {
+            setMessages(contact?.messages ?? []);
+        } else {
+            fetchMessages(contactId);
+        }
     }
 
     // handles filtering of contacts based on user search query
@@ -160,16 +179,32 @@ const Home = (): ReactElement => {
 
     // changes contacts online status
     const changeContactOnlineStatus = (userId: string, onlineStatus: boolean): void => {
-        setFilteredContacts((prevState: ContactThreadType[]): ContactThreadType[] => {
-            return prevState.map((contact: ContactThreadType): ContactThreadType => {
+        setFilteredContacts((prevState: ContactThreadType[] | GroupType[]): ContactThreadType[] | GroupType[] => {
+            return prevState.map((contact: ContactThreadType | GroupType): ContactThreadType | GroupType => {
                 if (contact._id === userId) {
                     const tContact = { ...contact, online: onlineStatus };
-                    setSelectedContact(tContact);
+                    if (contactType === 'people') {
+                        setSelectedContact(tContact as ContactThreadType);
+                    } else {
+                        setSelectedContact(tContact as GroupType);
+                    }
                     return tContact
                 };
                 return contact;
             })
         });
+    }
+
+    const handleContactTypeChange = (type: string): void => {
+        if (type === contactType) return;
+
+        setContactType(type);
+
+        if (type === 'people') {
+            setFilteredContacts(contacts);
+        } else {
+            setFilteredContacts(groupsFromStore);
+        }
     }
 
     // plays sound when message is sent
@@ -191,7 +226,7 @@ const Home = (): ReactElement => {
     // JSX Code
     return (
         <>
-            <Navbar />
+            <Navbar users={contacts} />
 
             <div className="col-md-12 messages-alert-container">
                 {NODE_ENV !== 'development' && (
@@ -204,9 +239,11 @@ const Home = (): ReactElement => {
             </div>
 
             <ContactsList
-                contacts={filteredContacts}
-                contactSelected={onContactSelected}
+                chatItems={filteredContacts}
+                chatItemSelected={onContactSelected}
                 initiateSearch={onSearchInitiated}
+                contactType={contactType}
+                onContactTypeChange={handleContactTypeChange}
             />
 
             {/** Chat Message Area */}
