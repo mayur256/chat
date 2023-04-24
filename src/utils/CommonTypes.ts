@@ -21,6 +21,7 @@ export interface ClientToServerEvents {
     message: (message: Message) => void;
     disconnect: () => void;
     isTyping: (userId: string) => void;
+    'join-room': ({ user, room }: { user: string, room: string }) => void;
 }
 
 export interface InterServerEvents {

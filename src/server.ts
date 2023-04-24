@@ -104,6 +104,10 @@ class App {
         this.activeClientSocket.on('isTyping', this.handleTyping);
         // fired when connection disconnects / lost
         this.activeClientSocket.on('disconnect', this.handleUserDisconnect);
+        // fired when a group is created
+        this.activeClientSocket.on('join-room', ({ user, room }: {user: string, room: string}) => {
+            console.log({ user, room })
+        })
     }
 
     handleClientMessage = (message: Message) => {

@@ -41,7 +41,7 @@ import DropdownItem from "../../atoms/DropdownItem";
 // Props type definition
 interface IProps {
     users: ContactThreadType[]
-    socket?: Socket<ClientToServerEvents, ServerToClientEvents>
+    socket?: Socket<ServerToClientEvents, ClientToServerEvents>
 }
 
 // select wrapper type definition
@@ -147,7 +147,7 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
                         created_by: authUser._id
                     }
                     dispatch(ADD_GROUP(group));
-                    
+                    socket?.emit('join-room', { user: authUser._id, room: groupName });
                 }
             }
         });
