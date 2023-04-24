@@ -226,7 +226,10 @@ const Home = (): ReactElement => {
     // JSX Code
     return (
         <>
-            <Navbar users={contacts} />
+            <Navbar
+                users={contacts}
+                socket={socket}
+            />
 
             <div className="col-md-12 messages-alert-container">
                 {NODE_ENV !== 'development' && (

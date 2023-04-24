@@ -13,6 +13,9 @@ import { RootState } from "../../../store/types";
 // redux-actions
 import { ADD_GROUP } from "../../../store/reducers/groupSlice";
 
+// Socket IO
+import { Socket } from "socket.io-client";
+
 // Sweetalert
 import Swal, { SweetAlertResult } from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -20,10 +23,17 @@ import withReactContent from 'sweetalert2-react-content';
 // Utilities
 import { removeAuthUserFromStorage } from "../../../utilities/Common";
 // types
-import { ContactThreadType, GroupType, SelectOption } from "../../types";
+import {
+    ContactThreadType,
+    GroupType,
+    SelectOption,
+    ClientToServerEvents,
+    ServerToClientEvents,
+} from "../../types";
 
 // Atoms / Molecules / Organisms
 import Icon from "../../atoms/Icon";
+
 // import { Select } from "../../atoms/Select";
 import Dropdown from "../../molecules/DropDown";
 import DropdownItem from "../../atoms/DropdownItem";
@@ -31,6 +41,7 @@ import DropdownItem from "../../atoms/DropdownItem";
 // Props type definition
 interface IProps {
     users: ContactThreadType[]
+    socket?: Socket<ClientToServerEvents, ServerToClientEvents>
 }
 
 // select wrapper type definition
@@ -66,8 +77,7 @@ function MySelect({ userOptions, value, onSelectChange }: SProps): ReactElement 
     )
 }
 // Component definition
-const Navbar = ({ users }: IProps): ReactElement => {
-    // constants
+const Navbar = ({ users, socket }: IProps): ReactElement => {
 
     // Sweetalert initialization
     const MySwal = withReactContent(Swal);
@@ -102,7 +112,7 @@ const Navbar = ({ users }: IProps): ReactElement => {
 
     const onCreateRoomClicked = () => {
         MySwal.fire({
-            title: 'Create Room',
+            title: 'Create Group',
             html: (
                 <form>
                     <div className="mb-3 text-left">
@@ -137,6 +147,7 @@ const Navbar = ({ users }: IProps): ReactElement => {
                         created_by: authUser._id
                     }
                     dispatch(ADD_GROUP(group));
+                    
                 }
             }
         });
