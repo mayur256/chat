@@ -43,6 +43,7 @@ export interface Group {
     socketId: string;
     members: Array<string>;
     messages: Array<string>;
+    created_by: string;
     created_at: Date;
     _id?: string;
 }

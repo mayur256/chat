@@ -8,17 +8,25 @@ export interface IGroupModel extends Document {
     socketId: string;
     members: Array<string>;
     messages: Array<string>;
+    created_by: string;
     created_at: Date;
     updated_at: Date | null
 }
 
+// schema definition
 const groupSchema = new Schema({
     name: String,
     socketId: String,
     members: {
         type: [Schema.Types.ObjectId],
         ref: 'User',
-        default: []
+        default: [],
+        required: true
+    },
+    created_by: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     messages: {
         type: [Schema.Types.ObjectId],
