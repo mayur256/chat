@@ -18,6 +18,7 @@ export interface GroupType {
     online?: boolean;
     messages?: MessageType[],
     isSelected?: boolean | undefined;
+    slug?: string;
 }
 
 export interface ContactThreadType {
@@ -57,6 +58,7 @@ export interface ClientToServerEvents {
     message: (message: MessageType) => void;
     disconnect: () => void;
     isTyping: (userId: string) => void;
+    'join-room': ({ user, room }: { user: string, room: string }) => void;
 }
 
 export type TDivRef = HTMLDivElement;

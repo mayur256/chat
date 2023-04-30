@@ -21,6 +21,7 @@ export interface ClientToServerEvents {
     message: (message: Message) => void;
     disconnect: () => void;
     isTyping: (userId: string) => void;
+    'join-room': ({ user, room }: { user: string, room: string }) => void;
 }
 
 export interface InterServerEvents {
@@ -36,6 +37,18 @@ export interface Message {
     type?: string;
     _id?: string;
 }
+
+export interface Group {
+    name: string;
+    slug: string;
+    members: Array<string>;
+    messages: Array<string>;
+    created_by: string;
+    created_at: Date;
+    socketId?: string;
+    _id?: string;
+}
+
 /*interface SocketData {
   name: string;
   age: number;
