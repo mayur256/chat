@@ -16,16 +16,16 @@ class Group {
             error: false,
             data: null
         };
-
-        const loggedInUserId = req.body.decoded.id;
-
+       
         try {
-            const group = await groupManager.createGroup(req.body);
+            const { _id, ...rest } = req.body;
+            const group = await groupManager.createGroup(rest);
             resPayload.data = group;
         } catch (err) {
             resPayload.error = true;
             resPayload.status = 500;
             resPayload.data = SERVER_ERROR;
+            console.log(err)
         }
 
         res.json(resPayload);

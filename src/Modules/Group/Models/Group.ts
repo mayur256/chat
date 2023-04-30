@@ -5,23 +5,29 @@ const modelName = 'Group';
 // interface declaration for model
 export interface IGroupModel extends Document {
     name: string;
-    socketId: string;
+    slug: string;
     members: Array<string>;
     messages: Array<string>;
     created_by: string;
     created_at: Date;
-    updated_at: Date | null
+    updated_at: Date | null;
+    socketId?: string;
 }
 
 // schema definition
 const groupSchema = new Schema({
-    name: String,
-    socketId: String,
+    name: {
+        type: String,
+        required: true
+    },
+    slug: {
+        type: String,
+        required: true
+    },
     members: {
         type: [Schema.Types.ObjectId],
         ref: 'User',
-        default: [],
-        required: true
+        default: []
     },
     created_by: {
         type: Schema.Types.ObjectId,
@@ -33,6 +39,7 @@ const groupSchema = new Schema({
         ref: 'Message',
         default: []
     },
+    socketId: String,
     created_at: {
         type: Date,
         default: Date.now

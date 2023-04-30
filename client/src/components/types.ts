@@ -18,6 +18,7 @@ export interface GroupType {
     online?: boolean;
     messages?: MessageType[],
     isSelected?: boolean | undefined;
+    slug?: string;
 }
 
 export interface ContactThreadType {

@@ -13,15 +13,20 @@ import { RootState } from "../../../store/types";
 // redux-actions
 import { ADD_GROUP } from "../../../store/reducers/groupSlice";
 
+// API calls
+import { createGroup } from "../../../api/group";
+
 // Socket IO
 import { Socket } from "socket.io-client";
 
 // Sweetalert
-import Swal, { SweetAlertResult } from 'sweetalert2';
+import Swal, { SweetAlertResult, SweetAlertIcon } from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
 // Utilities
 import { removeAuthUserFromStorage } from "../../../utilities/Common";
+import { API_RESPONSE_STATUS } from "../../../utilities/Constants";
+
 // types
 import {
     ContactThreadType,
@@ -81,6 +86,18 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
 
     // Sweetalert initialization
     const MySwal = withReactContent(Swal);
+    // Toast Initialization
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
 
     // hooks
     const storeData = useSelector((state: RootState) => state);
@@ -142,12 +159,14 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
                     const group: GroupType = {
                         _id: new Date().getTime().toString(36),
                         name: groupName,
+                        slug: groupName.trim().toLowerCase().replace(/[.-\s]/gi, '_'),
                         messages: [],
                         members: groupUsersRef.current.map(el => el.value),
                         created_by: authUser._id
                     }
                     dispatch(ADD_GROUP(group));
-                    socket?.emit('join-room', { user: authUser._id, room: groupName });
+                    // socket?.emit('join-room', { user: authUser._id, room: groupName });
+                    createAGroup(group)
                 }
             }
         });
@@ -156,6 +175,30 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
     // MySelect change handler
     const handleSelectChange = (newVal: any): void => {
         groupUsersRef.current = newVal;
+    }
+
+    // Invokes an API to create a group
+    const createAGroup = async (group: GroupType) => {
+        try {
+            // invoke API
+            const response = await createGroup(group);
+
+            if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
+                showToast('Group created successfully!');        
+            }
+
+        } catch (err: any) {
+            console.error(err);
+            showToast('Something went wrong', 'error');
+        }
+    }
+
+    // diplays a test message
+    const showToast = (message: string, type: SweetAlertIcon = 'success'): void => {
+        Toast.fire({
+            icon: type,
+            title: message
+        })
     }
     
     /**Handler function - ends  */

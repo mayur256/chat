@@ -40,11 +40,12 @@ export interface Message {
 
 export interface Group {
     name: string;
-    socketId: string;
+    slug: string;
     members: Array<string>;
     messages: Array<string>;
     created_by: string;
     created_at: Date;
+    socketId?: string;
     _id?: string;
 }
 
