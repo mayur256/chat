@@ -37,6 +37,16 @@ export interface Message {
     type?: string;
     _id?: string;
 }
+
+export interface Group {
+    name: string;
+    socketId: string;
+    members: Array<string>;
+    messages: Array<string>;
+    created_at: Date;
+    _id?: string;
+}
+
 /*interface SocketData {
   name: string;
   age: number;
