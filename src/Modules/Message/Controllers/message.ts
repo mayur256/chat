@@ -17,7 +17,6 @@ import { SERVER_ERROR } from "../../../utils/Constants";
 class Message {
 
     /**
-     * 
      * @param req {Request}
      * @param res {Response}
      */
