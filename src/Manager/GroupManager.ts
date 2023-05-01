@@ -28,5 +28,21 @@ export default {
         } catch (ex: any) {
             throw ex;
         }
+    },
+
+    // gets all the groups of a user
+    getUserGroups: async (userId: string): Promise<IGroup[]> => {
+        try {
+            const groups = await Group.find({
+                $or: [
+                    { created_by: userId },
+                    { members: { $in: [userId] } }
+                ]
+            });
+
+            return groups;
+        } catch (err: any) {
+            throw err;
+        }
     }
 };

@@ -21,3 +21,22 @@ export const createGroup = (group: GroupType): Promise<IGrpResponse> => {
         })();
     })
 }
+
+interface IGroupsRes extends IResponse {
+    data: GroupType[]
+}
+// Invokes API to fetch auth user groups
+export const getUserGroups = (): Promise<IGroupsRes> => {
+
+    return new Promise((resolve: any) => {
+        (async () => {
+            const response = await fetchWrapper(
+                '/group',
+                'GET',
+                null,
+            );
+
+            resolve(response.json());
+        })();
+    })
+}

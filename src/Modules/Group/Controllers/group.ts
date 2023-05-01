@@ -10,7 +10,12 @@ import { ResponsePayload } from "../../../utils/CommonTypes";
 import { SERVER_ERROR } from "../../../utils/Constants";
 
 class Group {
-    createGroup = async (req: Request, res: Response) => {
+    /**
+     * @description - Creates a group
+     * @param {Request} req
+     * @param {Response} res
+     */
+    createGroup = async (req: Request, res: Response): Promise<void> => {
         const resPayload: ResponsePayload = {
             status: 200,
             error: false,
@@ -18,14 +23,37 @@ class Group {
         };
        
         try {
-            const { _id, ...rest } = req.body;
-            const group = await groupManager.createGroup(rest);
+            const group = await groupManager.createGroup(req.body);
             resPayload.data = group;
-        } catch (err) {
+        } catch (err: any) {
             resPayload.error = true;
             resPayload.status = 500;
-            resPayload.data = SERVER_ERROR;
-            console.log(err)
+            resPayload.data = err.toString();
+        }
+
+        res.json(resPayload);
+    }
+
+    /**
+     * @description - Gets all the group of auth user
+     * @param {Request} req
+     * @param {Response} res
+     */
+    getGroups = async (req: Request, res: Response): Promise<void> => {
+        const resPayload: ResponsePayload = {
+            status: 200,
+            error: false,
+            data: null
+        };
+
+        try {
+            const { id } = req.body.decoded;
+            const groups = await groupManager.getUserGroups(id);
+            resPayload.data = groups;
+        } catch (err: any) {
+            resPayload.error = true;
+            resPayload.status = 500;
+            resPayload.data = err.toString();
         }
 
         res.json(resPayload);

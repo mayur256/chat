@@ -7,4 +7,5 @@ import { verifyToken } from "../../middlewares/verifyToken";
 export default function (router: any) {
     // private routes
     router.post('/group', verifyToken, group.createGroup);
+    router.get('/group', verifyToken, group.getGroups);
 }

@@ -11,7 +11,7 @@ import RSelect from "react-select";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store/types";
 // redux-actions
-import { ADD_GROUP } from "../../../store/reducers/groupSlice";
+// import { ADD_GROUP } from "../../../store/reducers/groupSlice";
 
 // API calls
 import { createGroup } from "../../../api/group";
@@ -164,7 +164,7 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
                         members: groupUsersRef.current.map(el => el.value),
                         created_by: authUser._id
                     }
-                    dispatch(ADD_GROUP(group));
+                    // dispatch(ADD_GROUP(group));
                     // socket?.emit('join-room', { user: authUser._id, room: groupName });
                     createAGroup(group)
                 }

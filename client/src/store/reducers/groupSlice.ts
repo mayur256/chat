@@ -13,12 +13,16 @@ const groupSlice = createSlice({
     reducers: {
         ADD_GROUP: (state = [], action: PayloadAction<GroupType>) => {
             state.push(action.payload)
+        },
+
+        SET_GROUPS: (state = [], action: PayloadAction<GroupType[]>) => {
+            return [...state, ...action.payload];
         }
     }
 });
 
 // actions
-export const { ADD_GROUP } = groupSlice.actions;
+export const { ADD_GROUP, SET_GROUPS } = groupSlice.actions;
 
 // reducers
 export default groupSlice.reducer;

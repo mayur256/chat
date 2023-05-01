@@ -2,8 +2,11 @@
 import { ReactElement, useEffect, useState } from "react";
 
 // react-redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/types";
+
+// redux-actions
+import { SET_GROUPS } from "../../store/reducers/groupSlice";
 
 // Socket IO reference
 import { io, Socket } from "socket.io-client";
@@ -20,6 +23,7 @@ import { ContactThreadType, GroupType, MessageType } from '../types';
 // API services
 import { getUsers } from "../../api/user";
 import { getMessages } from "../../api/message";
+import { getUserGroups } from "../../api/group";
 
 // Constants
 import { API_RESPONSE_STATUS, NODE_ENV } from "../../utilities/Constants";
@@ -34,6 +38,7 @@ const Home = (): ReactElement => {
 
     // hooks
     // const navigate = useNavigate();
+    const dispatch = useDispatch();
     const authUserId = useSelector((state: RootState) => state.user._id);
     const groupsFromStore = useSelector((state: RootState) => state.groups);
     
@@ -57,6 +62,7 @@ const Home = (): ReactElement => {
         const socketInstance: Socket = io(SOCKET_SERVER_ENDPOINT);
         setSocket(socketInstance);
         fetchUsers();
+        fetchGroups();
         notifyServerOfSignIn(socketInstance);
         registerSocketServerEvents(socketInstance);
     }, []);
@@ -80,6 +86,16 @@ const Home = (): ReactElement => {
             fetchMessages(contacts[0]._id);
         } else if (!payload.data.length) {
             (document.querySelector("#logout-btn") as HTMLDivElement)?.click();
+        }
+    }
+
+    // invoke API to fetch user groups
+    const fetchGroups = async (): Promise<any> => {
+        const payload = await getUserGroups();
+        
+        if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
+            const groups = payload.data;
+            dispatch(SET_GROUPS(groups as GroupType[]))
         }
     }
 
