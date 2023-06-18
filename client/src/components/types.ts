@@ -12,13 +12,13 @@ export interface MessageType {
 export interface GroupType {
     _id: string;
     name: string;
+    slug?: string;
     members?: Array<string>;
     created_by?: string;
     avatar?: string;
     online?: boolean;
     messages?: MessageType[],
     isSelected?: boolean | undefined;
-    slug?: string;
 }
 
 export interface ContactThreadType {
@@ -58,7 +58,7 @@ export interface ClientToServerEvents {
     message: (message: MessageType) => void;
     disconnect: () => void;
     isTyping: (userId: string) => void;
-    'join-room': ({ user, room }: { user: string, room: string }) => void;
+    'join-groups': ({ user, room }: { user: string, room?: string }) => void;
 }
 
 export type TDivRef = HTMLDivElement;

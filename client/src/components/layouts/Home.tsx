@@ -54,6 +54,7 @@ const Home = (): ReactElement => {
     // send signIn event to server
     const notifyServerOfSignIn = (socket: Socket): void => {
         socket?.emit('signIn', authUserId);
+        socket?.emit('join-groups', { user: authUserId });
     }
 
     // componentDidMount
@@ -90,14 +91,6 @@ const Home = (): ReactElement => {
         
         if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
             const groups = payload.data;
-            /* const existingGroups = groupsFromStore;
-            let TGroups: GroupType[] = [];
-            for (const group of groups) {
-                if (!existingGroups.some((el: GroupType) => el._id !== group._id)) {
-                    TGroups.push(group);
-                }
-            }
-            console.log({ TGroups }) */
             dispatch(SET_GROUPS(groups as GroupType[]))
         }
     }

@@ -1,5 +1,6 @@
 // Models
-import User, {IUserModel} from "../Modules/User/Models/User";
+import User, { IUserModel } from "../Modules/User/Models/User";
+import Group from "../Modules/Group/Models/Group";
 
 class UserManager {
     /**
@@ -38,6 +39,26 @@ class UserManager {
             console.log(`Exception in UserManager.changeOnlineStatus :: ${ex}`);
         }
 
+        return result;
+    }
+
+    /**
+     * @description - fetches all groups of the given user
+     * @param {string} userId
+     * @returns {any} - list of user groups
+     */
+    getUserGroups = async (userId: string): Promise<any>  => {
+        let result;
+
+        try {
+            result = await Group.find({
+                $or: [
+                    { members: { $in: userId } },
+                    { created_by: userId }
+            ] });
+        } catch (ex) {
+            console.log(`Exception in UserManager.getUserGroups :: ${ex}`);
+        }
         return result;
     }
 };

@@ -105,21 +105,13 @@ class App {
         // fired when connection disconnects / lost
         this.activeClientSocket.on('disconnect', this.handleUserDisconnect);
         // fired when a group is created
-        this.activeClientSocket.on('join-room', ({ user, room }: {user: string, room: string}) => {
-            console.log({ user, room })
-        })
+        this.activeClientSocket.on('join-groups', this.handleGroupsJoin)
     }
 
     handleClientMessage = (message: Message) => {
         // store the message via controller
         try {
             messageController.storeMessage(message);
-            /*const toBeEchoedMsg = {
-              _id: Math.floor(Math.random() * 1000000000),
-              ...message
-            }
-      
-            this.ioSocket.emit('echoMessage', toBeEchoedMsg);*/
         } catch (ex: any) {
             console.log(`Error while storing client message in database`)
         }
@@ -136,6 +128,14 @@ class App {
 
     handleTyping = (userId: string) => {
         this.getSocketServer().emit('typingEchoed', userId);
+    }
+
+    handleGroupsJoin = ({ user, room }: { user: string, room?: string }) => {
+        try {
+            userController.joinGroups({ user, room }, this.activeClientSocket);
+        } catch (ex: any) {
+            console.log(`Error while joining groups`)
+        }
     }
 
     enableCors() {

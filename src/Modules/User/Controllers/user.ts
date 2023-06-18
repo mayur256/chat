@@ -49,6 +49,28 @@ class User {
 
         return operationStatus;
     }
+
+    /**
+     * @description - assigns rooms for groups to the connected user
+     * @param {User, room} Object
+     * @returns {Promise<void>}
+     */
+    joinGroups = async ({ user, room }: { user: string, room?: string }, clientSocket: any): Promise<void> => {
+        try {
+            if (room) {
+                clientSocket.join(room);
+            } else {
+                const userGroups = await userManager.getUserGroups(user);
+                for (const group of userGroups) {
+                    clientSocket.join(group.slug);
+                }
+                console.log({ userGroups })
+            }
+
+        } catch (ex: any) {
+            console.log(`Error in UserManager.joinGroups::${ex}`);
+        }
+    }
 }
 
 export default new User();

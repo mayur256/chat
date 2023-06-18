@@ -156,16 +156,18 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
                 const groupName = (document.getElementById('group-name') as HTMLInputElement)?.value;
                 
                 if (groupName) {
+                    const groupKey = groupName.trim().toLowerCase().replace(/[.-\s]/gi, '_');
+                    const _id = new Date().getTime().toString(36);
+                    const groupSlug = groupKey + '_' + _id;
                     const group: GroupType = {
-                        _id: new Date().getTime().toString(36),
+                        _id,
                         name: groupName,
-                        slug: groupName.trim().toLowerCase().replace(/[.-\s]/gi, '_'),
+                        slug: groupSlug,
                         messages: [],
                         members: groupUsersRef.current.map(el => el.value),
                         created_by: authUser._id
                     }
-                    // dispatch(ADD_GROUP(group));
-                    // socket?.emit('join-room', { user: authUser._id, room: groupName });
+                    
                     createAGroup(group);
                 }
             }
@@ -184,7 +186,8 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
             const response = await createGroup(group);
 
             if (!response.error && response.status === API_RESPONSE_STATUS.SUCCESS) {
-                showToast('Group created successfully!');        
+                showToast('Group created successfully!');
+                socket?.emit('join-groups', { user: authUser._id, room: group.slug });
             }
 
         } catch (err: any) {
