@@ -67,11 +67,6 @@ const Home = (): ReactElement => {
         registerSocketServerEvents(socketInstance);
     }, []);
 
-    // componentDidMount / componentDidUpdate
-    useEffect(() => {
-        setFilteredContacts(groupsFromStore);
-    }, [groupsFromStore]);
-
     // invoke API to fetch users
     const fetchUsers = async (): Promise<void> => {
         const payload = await getUsers();
@@ -95,6 +90,14 @@ const Home = (): ReactElement => {
         
         if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
             const groups = payload.data;
+            /* const existingGroups = groupsFromStore;
+            let TGroups: GroupType[] = [];
+            for (const group of groups) {
+                if (!existingGroups.some((el: GroupType) => el._id !== group._id)) {
+                    TGroups.push(group);
+                }
+            }
+            console.log({ TGroups }) */
             dispatch(SET_GROUPS(groups as GroupType[]))
         }
     }
@@ -215,7 +218,7 @@ const Home = (): ReactElement => {
         if (type === contactType) return;
 
         setContactType(type);
-
+        
         if (type === 'people') {
             setFilteredContacts(contacts);
         } else {

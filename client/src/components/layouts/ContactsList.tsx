@@ -42,7 +42,7 @@ const ContactsList = ({
             initiateSearch(targetVal);
         }, 1000)
     }
-
+    
     // JSX
     return (
         <div className="col-md-4 col-xl-3 col-sm-5">

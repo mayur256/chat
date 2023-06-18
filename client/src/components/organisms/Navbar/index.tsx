@@ -166,7 +166,7 @@ const Navbar = ({ users, socket }: IProps): ReactElement => {
                     }
                     // dispatch(ADD_GROUP(group));
                     // socket?.emit('join-room', { user: authUser._id, room: groupName });
-                    createAGroup(group)
+                    createAGroup(group);
                 }
             }
         });

@@ -21,9 +21,11 @@ class Group {
             error: false,
             data: null
         };
-       
+        
         try {
-            const group = await groupManager.createGroup(req.body);
+            const groupPayload = req.body;
+            delete groupPayload._id;
+            const group = await groupManager.createGroup(groupPayload);
             resPayload.data = group;
         } catch (err: any) {
             resPayload.error = true;
