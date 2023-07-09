@@ -54,7 +54,8 @@ class Message {
             const echoedMsg: Partial<IMessageModel> = {
                 _id: Math.random() * 100000000,
                 from: msgPayload.from,
-                to: msgPayload.to,
+                to: msgPayload?.to ?? null,
+                group: msgPayload?.group ?? null,
                 type: msgPayload.type,
                 payload: msgPayload.payload,
                 sent_at: msgPayload.sent_at,
@@ -67,7 +68,8 @@ class Message {
                 // re-populate the echoed object with properties of newly created message document
                 echoedMsg._id = createdMsg._id;
                 echoedMsg.from = createdMsg.from;
-                echoedMsg.to = createdMsg.to;
+                echoedMsg.to = createdMsg?.to ?? '';
+                echoedMsg.group = createdMsg?.group ?? '';
                 echoedMsg.payload = createdMsg.payload;
                 echoedMsg.sent_at = createdMsg.sent_at;
                 echoedMsg.received_at = createdMsg.received_at;   

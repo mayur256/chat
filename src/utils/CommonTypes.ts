@@ -30,7 +30,8 @@ export interface InterServerEvents {
 
 export interface Message {
     from: string;
-    to: string;
+    to: string | undefined;
+    group: string | undefined;
     payload: string;
     sent_at: Date;
     received_at?: Date;

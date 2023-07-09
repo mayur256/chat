@@ -5,8 +5,8 @@ const modelName = 'Message';
 // interface declaration for model
 export interface IMessageModel extends Document {
     from: string;
-    to: string;
-    group: string;
+    to: string | null;
+    group: string | null;
     payload: string;
     type: string;
     sent_at: Date | null;
@@ -26,7 +26,7 @@ const messageSchema: Schema = new Schema({
     to: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        default: null
     },
 
     payload: {
@@ -35,8 +35,9 @@ const messageSchema: Schema = new Schema({
     },
 
     group: {
-        type: String,
-        default: null,
+        type: Schema.Types.ObjectId,
+        ref: 'Group',
+        default: null
     },
 
     type: {

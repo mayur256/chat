@@ -97,14 +97,19 @@ const Home = (): ReactElement => {
 
     // send user message to server
     const sendMessage = (msgTxt: string): void => {
-        const message: MessageType = {
+        let message: MessageType = {
             from: authUserId,
-            to: selectedContact?._id ?? '',
             type: 'text',
             payload: msgTxt,
             sent_at: new Date(),
             send: true
         };
+        if (contactType === 'people') {
+            message.to = selectedContact?._id;
+        } else {
+            message.group = selectedContact?._id;
+        }
+
         playMsgSend();
         socket?.emit('message', message);
     }

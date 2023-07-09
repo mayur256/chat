@@ -64,7 +64,6 @@ class User {
                 for (const group of userGroups) {
                     clientSocket.join(group.slug);
                 }
-                console.log({ userGroups })
             }
 
         } catch (ex: any) {

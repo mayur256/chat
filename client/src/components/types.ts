@@ -1,9 +1,10 @@
 // type for message
 export interface MessageType {
     from: string;
-    to: string;
     payload: string;
     sent_at: Date;
+    to?: string;
+    group?: string;
     received_at?: Date;
     type?: string;
     send?: boolean;
