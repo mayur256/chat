@@ -111,8 +111,7 @@ class App {
     handleClientMessage = (message: Message) => {
         // store the message via controller
         try {
-            console.log(message)
-            // messageController.storeMessage(message);
+            messageController.storeMessage(message);
         } catch (ex: any) {
             console.log(`Error while storing client message in database`)
         }

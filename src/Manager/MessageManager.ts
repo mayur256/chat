@@ -27,5 +27,14 @@ export default {
         } catch (ex) {
             throw ex;
         }
+    },
+
+    // gets all messages in a group
+    getGroupMessages: async (groupId: string): Promise<IMessage[] | null> => {
+        try {
+            return await Message.find({ group: groupId });
+        } catch (ex) {
+            throw ex;
+        }
     }
 }

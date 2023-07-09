@@ -22,7 +22,7 @@ import { ContactThreadType, GroupType, MessageType } from '../types';
 
 // API services
 import { getUsers } from "../../api/user";
-import { getMessages } from "../../api/message";
+import { getGroupMessages, getMessages } from "../../api/message";
 import { getUserGroups } from "../../api/group";
 
 // Constants
@@ -91,7 +91,9 @@ const Home = (): ReactElement => {
         
         if (!payload.error && API_RESPONSE_STATUS.SUCCESS === payload.status && payload.data.length > 0) {
             const groups = payload.data;
-            dispatch(SET_GROUPS(groups as GroupType[]))
+            const firstGId = groups[0]._id;
+            dispatch(SET_GROUPS(groups as GroupType[]));
+            fetchGroupMessages(firstGId);
         }
     }
 
@@ -167,6 +169,17 @@ const Home = (): ReactElement => {
             const response = await getMessages(threadId);
             if (!response.error && API_RESPONSE_STATUS.SUCCESS === response.status) {
                 setMessages(response.data);
+            }
+        }
+    }
+
+    // fetches messages based on selected group contact
+    const fetchGroupMessages = async (groupId: string): Promise<void> => {
+        if (groupId) {
+            const response = await getGroupMessages(groupId);
+            if (!response.error && API_RESPONSE_STATUS.SUCCESS === response.status) {
+                // setMessages(response.data);
+                console.log(response.data)
             }
         }
     }

@@ -19,6 +19,7 @@ class Message {
     /**
      * @param req {Request}
      * @param res {Response}
+     * @description - returns all messages for a specific conversation
      */
     getMessages = async (req: Request, res: Response) => {
         const resPayload: ResponsePayload = {
@@ -81,6 +82,32 @@ class Message {
         } catch (ex) {
             console.log(`Error in Message Controller :: ${ex}`);
         }
+    }
+
+    /**
+     * @param {Request} req 
+     * @param {Response} res
+     * @description - returns all messages for a group conversation 
+     */
+    getGroupMessages = async (req: Request, res: Response): Promise<void> => {
+        const resPayload: ResponsePayload = {
+            status: 200,
+            error: false,
+            data: null
+        };
+
+        const { groupId } = req.params;
+
+        try {
+            const messages = await messageManager.getGroupMessages(groupId);
+            if (messages) resPayload.data = messages;
+        } catch (ex) {
+            resPayload.data = SERVER_ERROR;
+            resPayload.status = 500;
+            resPayload.error = true;
+            console.log(`Error in Message Controller :: ${ex}`);
+        }
+        res.json(resPayload);
     }
 }
 
