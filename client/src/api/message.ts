@@ -18,17 +18,3 @@ export const getMessages = (threadId: string): Promise<IMsgResponse> => {
         })();
     })
 }
-
-export const getGroupMessages = (groupId: string): Promise<IMsgResponse> => {
-    return new Promise((resolve) => {
-        (async () => {
-            const response = await fetchWrapper(
-                `/messages/group/${groupId}`,
-                'GET',
-                null,
-            )
-
-            resolve(response.json());
-        })();
-    })
-}

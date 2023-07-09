@@ -89,7 +89,7 @@ class Message {
      * @param {Response} res
      * @description - returns all messages for a group conversation 
      */
-    getGroupMessages = async (req: Request, res: Response): Promise<void> => {
+    /* getGroupMessages = async (req: Request, res: Response): Promise<void> => {
         const resPayload: ResponsePayload = {
             status: 200,
             error: false,
@@ -108,7 +108,7 @@ class Message {
             console.log(`Error in Message Controller :: ${ex}`);
         }
         res.json(resPayload);
-    }
+    } */
 }
 
 export default new Message();

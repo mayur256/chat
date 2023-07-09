@@ -9,5 +9,5 @@ import { verifyToken } from "../../middlewares/verifyToken";
 
 export default function(router : Router) {
     router.get('/messages/:threadId', verifyToken, message.getMessages);
-    router.get('/messages/group/:groupId', verifyToken, message.getGroupMessages);
+    // router.get('/messages/group/:groupId', verifyToken, message.getGroupMessages);
 }

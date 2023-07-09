@@ -1,6 +1,7 @@
 // NPM modules
 
 // Models
+import Group from "../Modules/Group/Models/Group";
 import Message from "../Modules/Message/Models/Message"
 
 // type definitions
@@ -10,7 +11,14 @@ export default {
     // message store handler
     storeMessage: async (msgPayload: IMessage) => {
         try {
-            return await Message.create(msgPayload);
+            const newMsg = await Message.create(msgPayload);
+            
+            // save a reference of message in group if it is a messsage in group
+            if (newMsg?.group) {
+                await Group.updateOne({ _id: newMsg.group }, { $addToSet: { messages: newMsg._id } });
+            }
+
+            return newMsg;
         } catch (ex: any) {
             throw ex;
         }
@@ -30,11 +38,11 @@ export default {
     },
 
     // gets all messages in a group
-    getGroupMessages: async (groupId: string): Promise<IMessage[] | null> => {
+    /* getGroupMessages: async (groupId: string): Promise<IMessage[] | null> => {
         try {
             return await Message.find({ group: groupId });
         } catch (ex) {
             throw ex;
         }
-    }
+    } */
 }

@@ -38,7 +38,7 @@ export default {
                     { created_by: userId },
                     { members: { $in: [userId] } }
                 ]
-            });
+            }).populate(['messages']);
 
             return groups;
         } catch (err: any) {
